@@ -13,6 +13,7 @@ import {
   Strategy, 
   Alerts, 
   Analytics, 
+  Components,
   NotFound 
 } from './pages';
 
@@ -35,6 +36,7 @@ function App() {
             <Route path="/strategy" element={<Strategy />} />
             <Route path="/alerts" element={<Alerts />} />
             <Route path="/analytics" element={<Analytics />} />
+            <Route path="/components" element={<Components />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>

@@ -258,6 +258,7 @@ const Header: React.FC<HeaderProps> = ({ user, notificationCount = 0 }) => {
     { path: '/strategy', label: '투자 전략' },
     { path: '/alerts', label: '알림 센터' },
     { path: '/analytics', label: '분석 도구' },
+    { path: '/components', label: '컴포넌트' },
     { path: '/profile', label: '프로필' },
   ];
 
