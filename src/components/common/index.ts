@@ -21,6 +21,9 @@ export { default as RealtimeAlerts } from './RealtimeAlerts';
 // Cards
 export * from '../cards';
 
+// Charts
+export * from '../charts';
+
 // Modals
 export * from '../modals';
 

@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { theme } from '../styles/theme';
+import { theme, mediaQueries } from '../styles/theme';
+import { PriceChart } from '../components/common';
+import { useChartData } from '../hooks';
 
 const DashboardContainer = styled.div`
   padding: ${theme.spacing.lg};
@@ -99,7 +101,26 @@ const FeatureItem = styled.li`
   border-radius: ${theme.borderRadius.sm};
 `;
 
+const ChartSection = styled.div`
+  margin-bottom: ${theme.spacing.xl};
+`;
+
+const SectionTitle = styled.h2`
+  color: ${theme.colors.text};
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: ${theme.spacing.lg};
+  display: flex;
+  align-items: center;
+  gap: ${theme.spacing.sm};
+`;
+
 const Dashboard: React.FC = () => {
+  const [selectedSymbol, setSelectedSymbol] = useState('BTC');
+  const [selectedTimeframe, setSelectedTimeframe] = useState('1d');
+  
+  const { data: chartData, isLoading, error } = useChartData(selectedSymbol, selectedTimeframe);
+
   return (
     <DashboardContainer>
       <WelcomeSection>
@@ -127,6 +148,20 @@ const Dashboard: React.FC = () => {
           <StatLabel>신호 정확도</StatLabel>
         </StatCard>
       </StatsGrid>
+
+      <ChartSection>
+        <SectionTitle>
+          📈 실시간 가격 차트
+        </SectionTitle>
+        <PriceChart
+          data={chartData}
+          symbol={selectedSymbol}
+          timeframe={selectedTimeframe}
+          onTimeframeChange={setSelectedTimeframe}
+          isLoading={isLoading}
+          error={error}
+        />
+      </ChartSection>
 
       <ComingSoonSection>
         <ComingSoonTitle>🎯 주요 기능</ComingSoonTitle>
