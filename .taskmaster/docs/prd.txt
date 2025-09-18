@@ -1,0 +1,129 @@
+# GainDeuk 프론트엔드 개발 PRD
+
+## 프로젝트 개요
+GainDeuk은 AI가 암호화폐 호재/악재를 분석하여 개인 맞춤형 투자 타임프레임까지 추천해주는 실시간 알림 서비스입니다. 넷플릭스 웹페이지의 톤앤매너를 참고하여 모던하고 직관적인 UI/UX를 구현합니다.
+
+## 기술 스택
+- React 18.2.0 + TypeScript
+- Styled Components + Emotion
+- Framer Motion (애니메이션)
+- Recharts (차트)
+- React Query (상태 관리)
+- Zustand (전역 상태)
+- Axios (HTTP 클라이언트)
+- React Router DOM (라우팅)
+
+## 핵심 기능
+
+### 1. 메인 대시보드 (/)
+- 실시간 시장 현황 (김치프리미엄, 상위 코인)
+- 개인화된 신호 카드 (가로 스크롤)
+- 타임프레임별 전략 (스켈핑/데이트레이딩/스윙/장기)
+- 실시간 알림 배너
+- API: GET /api/signals, /api/coins, /api/korean-market/stats, /api/personalization/recommendations
+
+### 2. 신호 분석 페이지 (/signals)
+- 신호 필터링 (점수 범위, 액션 타입, 타임프레임)
+- 신호 카드 그리드 표시
+- 실시간 WebSocket 업데이트
+- 신호 상세 정보 모달
+- API: GET /api/signals, WebSocket 연결
+
+### 3. 코인 분석 페이지 (/coins)
+- 시가총액 순위별 코인 리스트
+- 코인 검색 기능
+- 가격 차트 및 거래량 차트
+- 김치프리미엄 정보
+- API: GET /api/coins, /api/korean-market/kimchi-premium
+
+### 4. 개인화 설정 페이지 (/profile)
+- 투자 스타일 및 경험 수준 설정
+- 타임프레임 및 코인 선호도 설정
+- 알림 설정 (푸시, 이메일, Discord)
+- 포트폴리오 관리
+- API: GET/PUT /api/user-profiles, /api/personalization/recommendations
+
+### 5. 투자 전략 페이지 (/strategy)
+- AI 기반 개인화 전략 생성
+- 타임프레임별 추천 전략 카드
+- 실시간 전략 최적화
+- 백테스팅 결과
+- API: POST /api/investment-strategy/generate
+
+### 6. 알림 센터 (/alerts)
+- 알림 목록 및 내역
+- 알림 설정 (신호 강도, 코인별)
+- 알림 통계 및 성공률
+- 알림 테스트 기능
+- API: GET/POST/PUT/DELETE /api/alerts
+
+### 7. 분석 도구 페이지 (/analytics)
+- 온체인 분석 (고래 움직임, 대용량 거래)
+- 소셜미디어 감정 분석
+- 한국 커뮤니티 분석
+- 데이터 품질 모니터링
+- API: GET /api/onchain/data, /api/social-media/sentiment
+
+## 핵심 컴포넌트
+
+### SignalCard 컴포넌트
+- 신호 데이터를 카드 형태로 표시
+- 코인 정보, AI 점수, 추천 액션, 타임프레임 포함
+- 클릭 시 상세 정보 모달 표시
+- 넷플릭스 스타일의 카드 디자인
+
+### PriceChart 컴포넌트
+- 실시간 가격 차트 표시
+- 1h, 4h, 1d, 1w 타임프레임 지원
+- 30초마다 자동 새로고침
+- Recharts 라이브러리 사용
+
+### KimchiPremium 컴포넌트
+- 김치프리미엄 정보 표시
+- 프리미엄 비율, 한국/글로벌 가격, 트렌드
+- 1분마다 자동 새로고침
+- 프리미엄 비율에 따른 색상 변화
+
+## 실시간 기능
+- WebSocket 연결 (ws://localhost:3000/ws/signals)
+- 실시간 신호 업데이트
+- React Query 캐시 업데이트
+- 연결 상태 및 에러 처리
+
+## 반응형 디자인
+- 모바일 (768px 이하): 1열 그리드, 세로 네비게이션
+- 태블릿 (769px-1024px): 2열 그리드
+- 데스크톱 (1025px 이상): 3열 그리드, 넓은 간격
+
+## 애니메이션 요구사항
+- 페이지 전환: fadeIn/fadeOut 효과
+- 카드 호버: 1.02배 scale 변화
+- 로딩 상태: 스켈레톤 애니메이션
+- 데이터 업데이트: 부드러운 전환 효과
+- Framer Motion 사용
+
+## 성능 최적화
+- React.memo를 사용한 컴포넌트 최적화
+- useMemo, useCallback을 사용한 계산 최적화
+- 가상화를 사용한 대용량 리스트 렌더링
+- 이미지 지연 로딩
+
+## 접근성 및 SEO
+- ARIA 라벨 및 역할 설정
+- 키보드 네비게이션 지원
+- 메타 태그 및 Open Graph 태그
+- 구조화된 데이터 (JSON-LD)
+
+## API 연동
+- 베이스 URL: http://localhost:3000/api
+- Swagger 문서: http://localhost:3000/api-docs/
+- Bearer 토큰 인증
+- 10초 타임아웃
+- 401 오류 시 로그인 페이지 리다이렉트
+
+## 완성 목표
+1. 반응형 웹 애플리케이션 (모바일, 태블릿, 데스크톱 지원)
+2. 실시간 데이터 업데이트 (WebSocket)
+3. 개인화된 사용자 경험 (사용자 프로필 기반 맞춤 추천)
+4. 직관적인 UI/UX (넷플릭스 스타일의 모던한 디자인)
+5. 고성능 애플리케이션 (최적화된 렌더링 및 데이터 처리)

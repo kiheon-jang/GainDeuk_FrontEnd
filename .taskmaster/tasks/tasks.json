@@ -1,0 +1,469 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Project Setup and Configuration",
+        "description": "Initialize React 18.2.0 with TypeScript project and configure essential dependencies",
+        "details": "1. Create a new React project with TypeScript using Create React App or Vite\n2. Install and configure required dependencies:\n   - styled-components and emotion for styling\n   - framer-motion for animations\n   - recharts for data visualization\n   - react-query for server state management\n   - zustand for global state management\n   - axios for HTTP requests\n   - react-router-dom for routing\n3. Set up project structure with folders for components, pages, hooks, utils, services, and types\n4. Configure ESLint and Prettier for code quality\n5. Set up environment variables for different environments (dev, staging, prod)",
+        "testStrategy": "Verify all dependencies are correctly installed and configured by running the application locally and checking for any startup errors. Ensure TypeScript is properly configured with appropriate tsconfig.json settings.",
+        "priority": "high",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 2,
+        "title": "Create Base Layout Components",
+        "description": "Develop the base layout components including header, footer, and navigation that will be used across all pages",
+        "details": "1. Create a responsive Layout component that wraps all pages\n2. Implement Header component with navigation links to all main pages\n3. Create responsive navigation menu with mobile toggle\n4. Implement Footer component with relevant links and information\n5. Create a Sidebar component for desktop view\n6. Implement responsive breakpoints using styled-components media queries for mobile (768px), tablet (769px-1024px), and desktop (1025px+)\n7. Add Netflix-inspired styling with dark theme and vibrant accents",
+        "testStrategy": "Test layout components across different screen sizes to ensure responsive behavior. Verify navigation links work correctly and the mobile menu toggle functions as expected. Check that styling matches the Netflix-inspired design requirements.",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 3,
+        "title": "Setup Routing and Navigation",
+        "description": "Configure React Router for all required routes and implement navigation between pages",
+        "details": "1. Set up React Router with the following routes:\n   - / (Main Dashboard)\n   - /signals (Signal Analysis)\n   - /coins (Coin Analysis)\n   - /profile (Personalization Settings)\n   - /strategy (Investment Strategy)\n   - /alerts (Alert Center)\n   - /analytics (Analysis Tools)\n2. Implement route guards for authenticated routes\n3. Create a 404 Not Found page\n4. Add page transitions using Framer Motion\n5. Implement breadcrumb navigation\n6. Handle route parameters for dynamic pages",
+        "testStrategy": "Test all routes to ensure they render the correct components. Verify navigation between pages works as expected. Test page transitions for smoothness. Ensure 404 page is displayed for invalid routes.",
+        "priority": "high",
+        "dependencies": [
+          1,
+          2
+        ],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 4,
+        "title": "Implement API Service Layer",
+        "description": "Create a service layer for API communication with Axios and handle authentication, error handling, and request/response interceptors",
+        "details": "1. Create an Axios instance with base URL (http://localhost:3000/api)\n2. Implement request interceptors for adding authentication headers\n3. Implement response interceptors for error handling\n4. Create API service modules for each endpoint group:\n   - SignalService\n   - CoinService\n   - UserProfileService\n   - AlertService\n   - StrategyService\n   - AnalyticsService\n5. Add 10-second timeout for all requests\n6. Implement error handling for 401 errors to redirect to login page\n7. Add retry logic for failed requests",
+        "testStrategy": "Test API services with mock responses to ensure correct handling of success and error cases. Verify authentication headers are correctly added. Test timeout functionality and retry logic. Ensure 401 errors redirect to login page.",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 5,
+        "title": "Setup Global State Management",
+        "description": "Implement Zustand store for global state management and React Query for server state",
+        "details": "1. Create Zustand stores for:\n   - User preferences and authentication\n   - UI state (theme, sidebar visibility)\n   - Alert notifications\n2. Set up React Query with appropriate configuration:\n   - Default stale time\n   - Cache time\n   - Retry logic\n3. Implement React Query hooks for all API endpoints\n4. Create custom hooks for accessing and updating global state\n5. Implement persistence for user preferences using localStorage\n6. Set up React Query devtools for development environment",
+        "testStrategy": "Test Zustand stores by dispatching actions and verifying state changes. Test React Query hooks with mock API responses. Verify persistence works correctly by refreshing the page and checking if state is maintained.",
+        "priority": "high",
+        "dependencies": [
+          1,
+          4
+        ],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 6,
+        "title": "Implement WebSocket Connection Service",
+        "description": "Create a service for WebSocket connections to receive real-time updates",
+        "details": "1. Implement WebSocket connection to ws://localhost:3000/ws/signals\n2. Create a custom hook for managing WebSocket connections\n3. Implement reconnection logic with exponential backoff\n4. Add event listeners for different message types\n5. Integrate WebSocket data with React Query cache\n6. Implement connection status indicator\n7. Add error handling and logging for WebSocket errors\n8. Create utility functions for parsing WebSocket messages",
+        "testStrategy": "Test WebSocket connection with mock server. Verify reconnection logic works when connection is lost. Test integration with React Query cache by checking if data is updated when WebSocket messages are received.",
+        "priority": "high",
+        "dependencies": [
+          4,
+          5
+        ],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 7,
+        "title": "Create Reusable UI Components",
+        "description": "Develop a library of reusable UI components with Netflix-inspired styling",
+        "details": "1. Create the following components:\n   - Button (primary, secondary, ghost variants)\n   - Input fields (text, number, select, checkbox)\n   - Card components with hover animations\n   - Modal and Dialog components\n   - Dropdown and Select components\n   - Toggle switches\n   - Tabs and Accordion components\n   - Skeleton loaders for content\n   - Toast notifications\n2. Implement Netflix-inspired styling with dark theme\n3. Add animations using Framer Motion\n4. Ensure all components are accessible with proper ARIA attributes\n5. Create a component documentation page",
+        "testStrategy": "Test all UI components in isolation to ensure they render correctly and respond to user interactions. Verify animations work as expected. Test accessibility using keyboard navigation and screen readers.",
+        "priority": "high",
+        "dependencies": [
+          1,
+          2
+        ],
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Develop Basic Input Components",
+            "description": "Create foundational input components including buttons, text fields, checkboxes, and toggle switches with Netflix-inspired styling",
+            "dependencies": [],
+            "details": "Implement Button component with primary, secondary, and ghost variants. Create Input field components for text, number, select, and checkbox types. Develop Toggle switch component with on/off states. Apply Netflix-inspired dark theme styling to all components. Ensure components are responsive and implement proper focus states. Add Framer Motion animations for hover and click interactions.\n<info added on 2025-09-18T09:24:18.243Z>\nSuccessfully implemented basic Input components:\n\n✅ Completed components:\n- Input: Basic Input component for text and number input (3 variants: default, filled, outlined)\n- Checkbox: Checkbox component (supports indeterminate state)\n- Toggle: Toggle switch component (includes Framer Motion animations)\n- Select: Dropdown selection component (with searchable and clearable options)\n\n🎨 Netflix styling applied:\n- Dark theme colors (Netflix Red #E50914, dark background)\n- 3 size options (sm, md, lg)\n- Hover and focus state animations\n- Error state support\n- Accessibility considerations (ARIA attributes, keyboard navigation)\n\n🔧 Technical features:\n- Full TypeScript support\n- Ref forwarding with forwardRef\n- Framer Motion animations (Toggle component)\n- Styled with styled-components\n- Helper text and error message support for all components\n- Responsive design\n\nAll components are exported in index.ts for use throughout the application.\n</info added on 2025-09-18T09:24:18.243Z>",
+            "status": "done",
+            "testStrategy": "Test all input components with different states (default, hover, focus, disabled). Verify proper keyboard navigation. Test responsive behavior across different screen sizes. Validate ARIA attributes for accessibility compliance."
+          },
+          {
+            "id": 2,
+            "title": "Implement Container Components",
+            "description": "Develop card, modal, dialog, and dropdown components with Netflix-inspired styling and animations",
+            "dependencies": [
+              "7.1"
+            ],
+            "details": "Create Card component with hover animations (scale transform). Implement Modal and Dialog components with overlay and focus trapping. Develop Dropdown and Select components with expandable options. Apply Netflix dark theme styling consistent with input components. Add Framer Motion animations for transitions and interactions. Ensure all components have proper z-index management for layering.\n<info added on 2025-09-18T09:26:00.885Z>\nSuccessfully implemented Container components:\n\n✅ Completed components:\n- Card: Card component with hover animations (4 variants: default, elevated, outlined, filled)\n- Modal: Modal component with overlay and focus trapping (5 sizes, 3 variants)\n- Dialog: Dialog component with special styling (5 variants: default, warning, error, success, info)\n\n🎨 Netflix styling applied:\n- Dark theme color consistency maintained\n- Framer Motion animations (card hover, modal enter/exit)\n- Proper z-index management for layering\n- Responsive design\n\n🔧 Technical features:\n- Card: Supports subcomponents (Header, Title, Subtitle, Content, Footer, Actions)\n- Modal: ESC key support, close on overlay click, focus trapping, body scroll prevention\n- Dialog: Simple dialog with icons and messages, Actions subcomponent\n- Full TypeScript support\n- Accessibility considerations (ARIA attributes, keyboard navigation)\n\nAll components are exported in index.ts and ready for use.\n</info added on 2025-09-18T09:26:00.885Z>",
+            "status": "done",
+            "testStrategy": "Test card hover animations. Verify modal/dialog focus trapping and keyboard dismissal. Test dropdown expansion and selection. Validate animations work correctly across browsers. Test accessibility using screen readers."
+          },
+          {
+            "id": 3,
+            "title": "Create Navigation Components",
+            "description": "Develop tabs, accordion, and navigation-related components with Netflix-inspired styling",
+            "dependencies": [
+              "7.1"
+            ],
+            "details": "Implement Tabs component with animated selection indicator. Create Accordion component with expand/collapse animations. Ensure components maintain state correctly. Apply consistent Netflix-inspired styling. Add keyboard navigation support. Implement proper ARIA roles and attributes for accessibility. Use Framer Motion for smooth transitions between states.\n<info added on 2025-09-18T09:28:01.442Z>\nNavigation components have been successfully implemented:\n\n✅ Completed components:\n- Tabs: Tab component with animated selection indicator (3 variants: default, pills, underline)\n- Accordion: Accordion component with expand/collapse animations (3 variants: default, bordered, filled)\n\n🎨 Netflix styling applied:\n- Consistent dark theme colors\n- Framer Motion animations (tab indicator, accordion expand/collapse)\n- 3 size options (sm, md, lg)\n- Hover and active state styling\n\n🔧 Technical features:\n- Tabs: Keyboard navigation support (arrow keys, Home, End), animated indicator, multiple selection option\n- Accordion: Single/multiple expansion support, animated height transitions, disabled state support\n- Full TypeScript support\n- Accessibility considerations (ARIA attributes, keyboard navigation, screen reader support)\n- State management (internal state or external control)\n\nAll components are exported in index.ts and ready for use.\n</info added on 2025-09-18T09:28:01.442Z>",
+            "status": "done",
+            "testStrategy": "Test tab switching and indicator animations. Verify accordion expand/collapse functionality. Test keyboard navigation between tabs and accordion items. Validate ARIA attributes and screen reader compatibility."
+          },
+          {
+            "id": 4,
+            "title": "Develop Feedback Components",
+            "description": "Create skeleton loaders and toast notification components with Netflix-inspired styling",
+            "dependencies": [
+              "7.1",
+              "7.2"
+            ],
+            "details": "Implement Skeleton loader components for text, cards, and lists. Create Toast notification component with success, error, warning, and info variants. Add animation for toast appearance and dismissal. Implement auto-dismiss functionality with configurable timing. Ensure toast notifications are accessible and can be dismissed via keyboard. Apply Netflix-inspired styling consistent with other components.\n<info added on 2025-09-18T09:29:47.525Z>\nSuccessfully implemented the following feedback components:\n\n✅ Completed components:\n- Skeleton: Skeleton loader component for loading states with 4 variants (text, rectangular, circular, card)\n- Toast: Toast notification component with 4 types (success, error, warning, info)\n\n🎨 Netflix styling applied:\n- Consistent dark theme colors\n- Two animation options (pulse, wave)\n- Appropriate shadow and border styling\n- Responsive design\n\n🔧 Technical features:\n- Skeleton: \n  - Base Skeleton, Skeleton.Text, Skeleton.Card subcomponents\n  - Customizable text line count, spacing, and height\n  - Card skeleton (includes avatar, title, content, action buttons)\n  - Three animation options (pulse, wave, none)\n- Toast:\n  - Implemented based on react-hot-toast\n  - Utility functions (success, error, warning, info, loading, promise)\n  - ToastContainer component for global configuration\n  - Supports automatic and manual dismissal\n  - Promise-based toast support\n- Full TypeScript support\n- Accessibility considerations (keyboard dismissal, screen reader support)\n\nAll components are exported in index.ts and ready for use.\n</info added on 2025-09-18T09:29:47.525Z>",
+            "status": "done",
+            "testStrategy": "Test skeleton loaders with different sizes and configurations. Verify toast notifications appear and dismiss correctly. Test auto-dismiss timing functionality. Validate keyboard dismissal of toasts. Test screen reader announcements for toast notifications."
+          },
+          {
+            "id": 5,
+            "title": "Create Component Documentation Page",
+            "description": "Develop a comprehensive documentation page showcasing all UI components with usage examples and prop documentation",
+            "dependencies": [
+              "7.1",
+              "7.2",
+              "7.3",
+              "7.4"
+            ],
+            "details": "Create a documentation page layout with navigation to each component section. Implement interactive examples for each component showing different variants and states. Document all available props, their types, default values, and descriptions. Include code snippets for component usage. Add responsive design to documentation page. Implement search functionality to find components quickly. Include accessibility guidelines for each component.\n<info added on 2025-09-18T09:32:00.366Z>\n## Component Documentation Page Implementation\n\nThe component documentation page has been successfully implemented with the following features:\n\n### Completed Features\n- Components page: Comprehensive documentation page showcasing all UI components\n- Search functionality: Ability to search components by name\n- Navigation: Tab navigation for different sections\n- Interactive examples: Live examples demonstrating various variants and states of each component\n- Code snippets: Example code for component usage\n- Props tables: Detailed documentation including types, default values, and descriptions for all props\n\n### Netflix-Style Design\n- Consistent dark theme throughout\n- Gradient headings and Netflix Red accent colors\n- Card-based layout\n- Hover animations and Framer Motion transition effects\n\n### Technical Features\n- 6 main sections: Buttons, Inputs, Selection, Containers, Navigation, Feedback\n- Detailed examples and usage instructions for each section\n- Live demonstrations (modals, dialogs, toasts, etc.)\n- Responsive grid layout\n- Full TypeScript support\n- Accessibility considerations\n\n### Documentation Content\n- Button documentation: variants, sizes, props table\n- Input documentation: various input types and form controls\n- Container documentation: Card, Modal, Dialog examples\n- Navigation documentation: Tabs, Accordion demos\n- Feedback documentation: Skeleton, Toast notification examples\n\nAll components are documented with fully functional live examples.\n</info added on 2025-09-18T09:32:00.366Z>",
+            "status": "done",
+            "testStrategy": "Verify all components render correctly on the documentation page. Test interactive examples function as expected. Validate code snippets are correct and up-to-date. Test search functionality for finding components. Verify documentation page is responsive across different screen sizes."
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Implement SignalCard Component",
+        "description": "Create the SignalCard component to display signal data in a Netflix-style card format",
+        "details": "1. Implement SignalCard component with:\n   - Coin information display\n   - AI score visualization\n   - Recommended action (buy/sell/hold)\n   - Timeframe recommendation\n   - Card hover animation (1.02x scale)\n2. Add click handler to show detailed information modal\n3. Implement skeleton loader for loading state\n4. Style according to Netflix card design\n5. Add conditional styling based on signal strength\n6. Implement responsive behavior for different screen sizes",
+        "testStrategy": "Test SignalCard rendering with different data inputs. Verify hover animations work correctly. Test click handler opens the detail modal. Check responsive behavior across different screen sizes.",
+        "priority": "high",
+        "dependencies": [
+          7
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 9,
+        "title": "Implement PriceChart Component",
+        "description": "Create the PriceChart component using Recharts to display real-time price data",
+        "details": "1. Implement PriceChart component using Recharts\n2. Add support for different timeframes (1h, 4h, 1d, 1w)\n3. Implement auto-refresh every 30 seconds\n4. Add zoom and pan functionality\n5. Create custom tooltips for data points\n6. Implement responsive sizing\n7. Add loading state and error handling\n8. Style chart to match Netflix-inspired theme\n9. Implement smooth transitions for data updates",
+        "testStrategy": "Test chart rendering with different datasets. Verify timeframe switching works correctly. Test auto-refresh functionality. Check responsive behavior on different screen sizes.",
+        "priority": "medium",
+        "dependencies": [
+          4,
+          7
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 10,
+        "title": "Implement KimchiPremium Component",
+        "description": "Create the KimchiPremium component to display Korean market premium information",
+        "details": "1. Implement KimchiPremium component with:\n   - Premium percentage display\n   - Korean vs Global price comparison\n   - Trend indicator\n   - Auto-refresh every minute\n2. Add conditional styling based on premium percentage\n3. Implement tooltip with detailed information\n4. Create animation for value changes\n5. Add skeleton loader for loading state\n6. Implement error handling for API failures",
+        "testStrategy": "Test component with different premium values to ensure conditional styling works correctly. Verify auto-refresh functionality. Test animations for value changes.",
+        "priority": "medium",
+        "dependencies": [
+          4,
+          7
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 11,
+        "title": "Develop Main Dashboard Page",
+        "description": "Implement the main dashboard page (/) with real-time market overview and personalized signals",
+        "details": "1. Create Dashboard page component\n2. Implement sections for:\n   - Real-time market overview (Kimchi Premium, top coins)\n   - Personalized signal cards (horizontal scroll)\n   - Timeframe strategies (scalping/day trading/swing/long-term)\n   - Real-time alert banner\n3. Integrate with API endpoints:\n   - GET /api/signals\n   - GET /api/coins\n   - GET /api/korean-market/stats\n   - GET /api/personalization/recommendations\n4. Implement horizontal scrolling for signal cards\n5. Add skeleton loaders for loading states\n6. Implement responsive layout for different screen sizes",
+        "testStrategy": "Test dashboard page with mock API responses. Verify all sections render correctly. Test horizontal scrolling functionality. Check responsive layout on different screen sizes.",
+        "priority": "high",
+        "dependencies": [
+          3,
+          5,
+          8,
+          9,
+          10
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 12,
+        "title": "Develop Signal Analysis Page",
+        "description": "Implement the signal analysis page (/signals) with filtering and real-time updates",
+        "details": "1. Create SignalAnalysis page component\n2. Implement signal filtering functionality:\n   - Score range filter\n   - Action type filter (buy/sell/hold)\n   - Timeframe filter\n3. Create signal card grid display\n4. Integrate WebSocket for real-time updates\n5. Implement signal detail modal\n6. Add pagination or infinite scroll for large datasets\n7. Implement responsive grid layout (1 column for mobile, 2 for tablet, 3 for desktop)\n8. Add sorting options for signals",
+        "testStrategy": "Test filtering functionality with different filter combinations. Verify WebSocket updates are correctly displayed. Test signal detail modal. Check responsive grid layout on different screen sizes.",
+        "priority": "high",
+        "dependencies": [
+          3,
+          6,
+          8
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 13,
+        "title": "Develop Coin Analysis Page",
+        "description": "Implement the coin analysis page (/coins) with market cap ranking and search functionality",
+        "details": "1. Create CoinAnalysis page component\n2. Implement coin list sorted by market cap\n3. Add coin search functionality\n4. Integrate PriceChart component for selected coin\n5. Display volume chart and Kimchi Premium information\n6. Implement coin selection functionality\n7. Add pagination for coin list\n8. Create responsive layout for different screen sizes\n9. Implement skeleton loaders for loading states",
+        "testStrategy": "Test coin list rendering and pagination. Verify search functionality works correctly. Test coin selection and chart display. Check responsive layout on different screen sizes.",
+        "priority": "medium",
+        "dependencies": [
+          3,
+          9,
+          10
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 14,
+        "title": "Develop Personalization Settings Page",
+        "description": "Implement the profile page (/profile) for user preferences and settings",
+        "details": "1. Create Profile page component\n2. Implement sections for:\n   - Investment style and experience level settings\n   - Timeframe and coin preferences\n   - Notification settings (push, email, Discord)\n   - Portfolio management\n3. Create form components for each section\n4. Implement form validation\n5. Integrate with API endpoints:\n   - GET/PUT /api/user-profiles\n   - GET /api/personalization/recommendations\n6. Add save/cancel functionality\n7. Implement success/error notifications\n8. Create responsive layout for different screen sizes",
+        "testStrategy": "Test form submission with valid and invalid inputs. Verify API integration works correctly. Test success and error notifications. Check responsive layout on different screen sizes.",
+        "priority": "medium",
+        "dependencies": [
+          3,
+          5,
+          7
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 15,
+        "title": "Develop Investment Strategy Page",
+        "description": "Implement the strategy page (/strategy) with AI-based personalized investment strategies",
+        "details": "1. Create Strategy page component\n2. Implement sections for:\n   - AI-based personalized strategy generation\n   - Timeframe-specific strategy cards\n   - Real-time strategy optimization\n   - Backtesting results\n3. Create strategy generation form\n4. Implement strategy card components\n5. Integrate with API endpoint:\n   - POST /api/investment-strategy/generate\n6. Add loading states during strategy generation\n7. Implement success/error notifications\n8. Create responsive layout for different screen sizes",
+        "testStrategy": "Test strategy generation with different inputs. Verify API integration works correctly. Test loading states and notifications. Check responsive layout on different screen sizes.",
+        "priority": "medium",
+        "dependencies": [
+          3,
+          5,
+          7
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 16,
+        "title": "Develop Alert Center Page",
+        "description": "Implement the alerts page (/alerts) for notification management",
+        "details": "1. Create Alerts page component\n2. Implement sections for:\n   - Alert list and history\n   - Alert settings (signal strength, coin-specific)\n   - Alert statistics and success rate\n   - Alert test functionality\n3. Create alert list with filtering and sorting\n4. Implement alert settings form\n5. Integrate with API endpoints:\n   - GET/POST/PUT/DELETE /api/alerts\n6. Add pagination for alert list\n7. Implement success/error notifications\n8. Create responsive layout for different screen sizes",
+        "testStrategy": "Test alert list rendering and pagination. Verify alert settings form works correctly. Test API integration for all CRUD operations. Check responsive layout on different screen sizes.",
+        "priority": "medium",
+        "dependencies": [
+          3,
+          5,
+          7
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 17,
+        "title": "Develop Analysis Tools Page",
+        "description": "Implement the analytics page (/analytics) with on-chain and social media analysis",
+        "details": "1. Create Analytics page component\n2. Implement sections for:\n   - On-chain analysis (whale movements, large transactions)\n   - Social media sentiment analysis\n   - Korean community analysis\n   - Data quality monitoring\n3. Create visualization components for each analysis type\n4. Integrate with API endpoints:\n   - GET /api/onchain/data\n   - GET /api/social-media/sentiment\n5. Add filtering and timeframe selection\n6. Implement loading states and error handling\n7. Create responsive layout for different screen sizes",
+        "testStrategy": "Test visualization components with different datasets. Verify API integration works correctly. Test filtering and timeframe selection. Check responsive layout on different screen sizes.",
+        "priority": "medium",
+        "dependencies": [
+          3,
+          5,
+          7,
+          9
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 18,
+        "title": "Implement Page Transitions and Animations",
+        "description": "Add smooth page transitions and animations using Framer Motion",
+        "details": "1. Implement page transition animations:\n   - fadeIn/fadeOut effects between pages\n   - Slide transitions for related pages\n2. Add card hover animations (1.02x scale)\n3. Implement skeleton loading animations\n4. Create smooth data update transitions\n5. Add micro-interactions for buttons and interactive elements\n6. Implement toast notification animations\n7. Create custom loading spinners\n8. Ensure animations are performant and don't cause layout shifts",
+        "testStrategy": "Test all animations for smoothness and performance. Verify page transitions work correctly between different routes. Test animations on different devices to ensure performance.",
+        "priority": "medium",
+        "dependencies": [
+          3,
+          7,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 19,
+        "title": "Implement Virtualized Lists for Performance",
+        "description": "Add virtualization for large lists to improve performance",
+        "details": "1. Identify components with potentially large lists:\n   - Signal card grid\n   - Coin list\n   - Alert history\n2. Implement virtualization using react-window or react-virtualized\n3. Add infinite scrolling for virtualized lists\n4. Optimize rendering performance\n5. Implement placeholder items for items not yet in view\n6. Add scroll restoration when navigating back to lists\n7. Test performance with large datasets",
+        "testStrategy": "Test virtualized lists with large datasets (1000+ items) to verify performance. Measure and compare rendering times with and without virtualization. Test scroll behavior and placeholder rendering.",
+        "priority": "medium",
+        "dependencies": [
+          12,
+          13,
+          16
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 20,
+        "title": "Implement Accessibility Features",
+        "description": "Enhance application accessibility with ARIA attributes and keyboard navigation",
+        "details": "1. Add appropriate ARIA labels and roles to all components\n2. Implement keyboard navigation for all interactive elements\n3. Ensure proper focus management\n4. Add skip links for screen readers\n5. Implement high contrast mode\n6. Ensure proper heading hierarchy\n7. Add screen reader announcements for dynamic content\n8. Test with screen readers and keyboard-only navigation",
+        "testStrategy": "Test application with keyboard-only navigation to ensure all functionality is accessible. Use screen readers to verify ARIA attributes are correctly implemented. Run accessibility audits using tools like Lighthouse or axe.",
+        "priority": "medium",
+        "dependencies": [
+          7,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 21,
+        "title": "Implement SEO Optimization",
+        "description": "Add SEO features including meta tags, Open Graph tags, and structured data",
+        "details": "1. Create a SEO component for managing meta tags\n2. Add dynamic page titles and descriptions\n3. Implement Open Graph tags for social sharing\n4. Add Twitter card meta tags\n5. Implement structured data (JSON-LD) for relevant pages\n6. Create a sitemap.xml file\n7. Add canonical URLs\n8. Implement meta robots tags",
+        "testStrategy": "Test meta tags using browser developer tools. Validate structured data using Google's Structured Data Testing Tool. Test social sharing previews using Facebook and Twitter debuggers.",
+        "priority": "low",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 22,
+        "title": "Implement Error Handling and Fallbacks",
+        "description": "Add comprehensive error handling and fallback UI components",
+        "details": "1. Implement error boundaries for each major component\n2. Create fallback UI components for error states\n3. Add retry mechanisms for failed API requests\n4. Implement offline detection and handling\n5. Create custom error pages for different error types\n6. Add logging for client-side errors\n7. Implement graceful degradation for unsupported features\n8. Add user feedback mechanisms for error reporting",
+        "testStrategy": "Test error handling by simulating various error conditions (network errors, API errors, rendering errors). Verify fallback UIs are displayed correctly. Test retry mechanisms and offline handling.",
+        "priority": "medium",
+        "dependencies": [
+          4,
+          5,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 23,
+        "title": "Implement Performance Monitoring",
+        "description": "Add performance monitoring and optimization for critical rendering paths",
+        "details": "1. Implement React.memo for expensive components\n2. Use useMemo and useCallback for optimizing calculations and callbacks\n3. Add performance monitoring using React Profiler\n4. Implement code splitting for routes and large components\n5. Add lazy loading for images and non-critical components\n6. Optimize bundle size using webpack bundle analyzer\n7. Implement caching strategies for API responses\n8. Add performance metrics collection",
+        "testStrategy": "Measure component render times using React Profiler. Compare performance before and after optimizations. Test code splitting by verifying chunk loading. Measure bundle sizes and load times.",
+        "priority": "medium",
+        "dependencies": [
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          19
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 24,
+        "title": "Implement Comprehensive Testing Suite",
+        "description": "Add unit, integration, and end-to-end tests for the application",
+        "details": "1. Set up testing framework (Jest, React Testing Library)\n2. Create unit tests for utility functions and hooks\n3. Implement component tests for all reusable components\n4. Add integration tests for page components\n5. Set up end-to-end testing with Cypress\n6. Implement API mocking for tests\n7. Add visual regression testing\n8. Set up continuous integration for automated testing",
+        "testStrategy": "Run the complete test suite to ensure all tests pass. Verify test coverage meets acceptable thresholds. Test the application manually to ensure all functionality works as expected.",
+        "priority": "medium",
+        "dependencies": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 25,
+        "title": "Final Integration and Deployment Setup",
+        "description": "Integrate all components and prepare for deployment",
+        "details": "1. Perform final integration of all components and pages\n2. Set up build process for production\n3. Implement environment-specific configuration\n4. Add deployment scripts\n5. Configure CI/CD pipeline\n6. Implement monitoring and error tracking\n7. Create documentation for the application\n8. Perform final testing and bug fixing\n9. Prepare for handoff to stakeholders",
+        "testStrategy": "Perform end-to-end testing of the complete application. Verify all features work as expected in a production-like environment. Test deployment process to ensure it works correctly.",
+        "priority": "high",
+        "dependencies": [
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24
+        ],
+        "status": "pending",
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "created": "2025-09-18T08:19:32.206Z",
+      "updated": "2025-09-18T09:32:04.787Z",
+      "description": "Tasks for master context"
+    }
+  }
+}
