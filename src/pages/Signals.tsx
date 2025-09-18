@@ -1,9 +1,17 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import styled from 'styled-components';
 import { theme, mediaQueries } from '../styles/theme';
-import { SignalCard } from '../components/common';
-import { useTopSignals } from '../hooks/useSignals';
-import type { Signal } from '../types';
+import { 
+  SignalCard, 
+  SignalFilters, 
+  SignalSorting, 
+  SignalDetailModal,
+  ConnectionStatus,
+  Pagination
+} from '../components/common';
+import { useSignals } from '../hooks/useSignals';
+import { useWebSocket } from '../hooks/useWebSocket';
+import type { Signal, SignalFilters as SignalFiltersType } from '../types';
 
 const SignalsContainer = styled.div`
   padding: ${theme.spacing.lg};
@@ -56,12 +64,39 @@ const SignalsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: ${theme.spacing.lg};
-  margin-top: ${theme.spacing.lg};
+  
+  ${mediaQueries.tablet} {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
   
   ${mediaQueries.mobile} {
     grid-template-columns: 1fr;
     gap: ${theme.spacing.md};
   }
+`;
+
+const ResultsInfo = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: ${theme.spacing.md};
+  color: ${theme.colors.textSecondary};
+  font-size: 0.9rem;
+`;
+
+const NoResultsContainer = styled.div`
+  text-align: center;
+  padding: ${theme.spacing.xl};
+  color: ${theme.colors.textSecondary};
+`;
+
+const NoResultsTitle = styled.h3`
+  color: ${theme.colors.text};
+  margin-bottom: ${theme.spacing.md};
+`;
+
+const NoResultsText = styled.p`
+  margin-bottom: ${theme.spacing.lg};
 `;
 
 const LoadingContainer = styled.div`
@@ -83,11 +118,78 @@ const ErrorContainer = styled.div`
 `;
 
 const Signals: React.FC = () => {
-  const { data: signalsData, isLoading, error } = useTopSignals(20);
+  // State for filters and sorting
+  const [filters, setFilters] = useState<SignalFiltersType>({});
+  const [sortBy, setSortBy] = useState<string>('finalScore');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [selectedSignal, setSelectedSignal] = useState<Signal | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // WebSocket connection for real-time updates
+  useWebSocket({
+    autoConnect: true,
+    reconnectOnMount: true,
+  });
+
+  // Fetch signals with filters
+  const { data: signalsData, isLoading, error } = useSignals({
+    ...filters,
+    action: filters.action as 'STRONG_BUY' | 'BUY' | 'HOLD' | 'WEAK_SELL' | 'SELL' | 'STRONG_SELL' | undefined,
+    timeframe: filters.timeframe as 'SCALPING' | 'DAY_TRADING' | 'SWING_TRADING' | 'LONG_TERM' | undefined,
+    priority: filters.priority as 'high_priority' | 'medium_priority' | 'low_priority' | undefined,
+    sort: sortBy as 'finalScore' | 'createdAt' | 'rank',
+    order: sortOrder,
+    page: currentPage,
+    limit: 20,
+  });
+
+  // Filter and sort signals
+  const filteredAndSortedSignals = useMemo(() => {
+    if (!signalsData?.data?.signals) return [];
+
+    let filtered = signalsData.data.signals;
+
+    // Apply additional client-side filtering if needed
+    if (filters.coinSymbol) {
+      filtered = filtered.filter((signal: Signal) => 
+        signal.symbol.toLowerCase().includes(filters.coinSymbol!.toLowerCase()) ||
+        signal.name.toLowerCase().includes(filters.coinSymbol!.toLowerCase())
+      );
+    }
+
+    return filtered;
+  }, [signalsData?.data?.signals, filters]);
+
+  const handleFiltersChange = (newFilters: SignalFiltersType) => {
+    setFilters(newFilters);
+  };
+
+  const handleResetFilters = () => {
+    setFilters({});
+    setCurrentPage(1);
+  };
+
+  const handleSortChange = (newSortBy: string, newSortOrder: 'asc' | 'desc') => {
+    setSortBy(newSortBy);
+    setSortOrder(newSortOrder);
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    // Scroll to top when page changes
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const handleSignalClick = (signal: Signal) => {
-    console.log('Signal clicked:', signal);
-    // TODO: Open signal detail modal
+    setSelectedSignal(signal);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedSignal(null);
   };
 
   if (error) {
@@ -106,20 +208,62 @@ const Signals: React.FC = () => {
     <SignalsContainer>
       <PageTitle>📊 신호 분석</PageTitle>
       
+      <ConnectionStatus />
+      
       {isLoading ? (
         <LoadingContainer>
           <div>신호 데이터를 불러오는 중...</div>
         </LoadingContainer>
-      ) : signalsData?.data && signalsData.data.length > 0 ? (
-        <SignalsGrid>
-          {signalsData.data.map((signal) => (
-            <SignalCard
-              key={signal._id}
-              signal={signal}
-              onClick={handleSignalClick}
+      ) : signalsData?.data?.signals && signalsData.data.signals.length > 0 ? (
+        <>
+          <SignalFilters
+            filters={filters}
+            onFiltersChange={handleFiltersChange}
+            onReset={handleResetFilters}
+          />
+          
+          <SignalSorting
+            sortBy={sortBy}
+            sortOrder={sortOrder}
+            onSortChange={handleSortChange}
+          />
+          
+          <ResultsInfo>
+            <span>
+              총 {signalsData?.data?.total || 0}개의 신호 중 {filteredAndSortedSignals.length}개 표시
+            </span>
+            <span>
+              {Object.keys(filters).length > 0 && '필터 적용됨'}
+            </span>
+          </ResultsInfo>
+
+          {filteredAndSortedSignals.length > 0 ? (
+            <SignalsGrid>
+              {filteredAndSortedSignals.map((signal: Signal) => (
+                <SignalCard
+                  key={signal._id}
+                  signal={signal}
+                  onClick={handleSignalClick}
+                />
+              ))}
+            </SignalsGrid>
+          ) : (
+            <NoResultsContainer>
+              <NoResultsTitle>검색 결과가 없습니다</NoResultsTitle>
+              <NoResultsText>
+                필터 조건을 조정하거나 초기화해보세요.
+              </NoResultsText>
+            </NoResultsContainer>
+          )}
+
+          {signalsData?.data?.totalPages && signalsData.data.totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={signalsData.data.totalPages}
+              onPageChange={handlePageChange}
             />
-          ))}
-        </SignalsGrid>
+          )}
+        </>
       ) : (
         <ComingSoonCard>
           <ComingSoonTitle>🚧 개발 중</ComingSoonTitle>
@@ -146,6 +290,12 @@ const Signals: React.FC = () => {
           </FeatureList>
         </ComingSoonCard>
       )}
+
+      <SignalDetailModal
+        signal={selectedSignal}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
     </SignalsContainer>
   );
 };
