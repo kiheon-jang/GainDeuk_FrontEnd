@@ -1,5 +1,5 @@
 import { api, retryRequest } from './api';
-import { Signal, SignalFilters, ApiResponse } from '../types';
+import type { Signal, SignalFilters, ApiResponse } from '../types';
 
 export interface SignalsQueryParams {
   page?: number;

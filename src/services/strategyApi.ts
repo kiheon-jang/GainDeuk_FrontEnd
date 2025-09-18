@@ -1,5 +1,5 @@
 import { api, retryRequest } from './api';
-import { InvestmentStrategy, ApiResponse } from '../types';
+import type { InvestmentStrategy, ApiResponse } from '../types';
 
 export interface StrategyGenerateData {
   userId: string;

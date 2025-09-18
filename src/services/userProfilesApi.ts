@@ -1,5 +1,5 @@
 import { api, retryRequest } from './api';
-import { UserProfile, ApiResponse } from '../types';
+import type { UserProfile, ApiResponse } from '../types';
 
 export interface UserProfileUpdateData {
   investmentStyle?: 'conservative' | 'moderate' | 'aggressive' | 'speculative';

@@ -1,14 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { 
   websocketService, 
-  WebSocketEventType, 
-  WebSocketEvent,
   connectWebSocket,
   disconnectWebSocket,
   subscribeToWebSocket,
   isWebSocketConnected,
   getWebSocketConnectionState
 } from '../services/websocketService';
+import type { WebSocketEventType, WebSocketEvent } from '../services/websocketService';
 import { useSignalsStore } from '../stores/signalsStore';
 import { useUIStore } from '../stores/uiStore';
 
@@ -40,7 +39,8 @@ export const useWebSocket = (options: UseWebSocketOptions = {}) => {
       setIsConnected(true);
       setConnectionState(getWebSocketConnectionState());
     } catch (err: any) {
-      setError(err.message || 'WebSocket 연결에 실패했습니다.');
+      console.warn('WebSocket connection failed:', err);
+      setError('실시간 업데이트를 사용할 수 없습니다. 기본 기능은 정상 작동합니다.');
       setIsConnected(false);
       setConnectionState(getWebSocketConnectionState());
     }
@@ -70,7 +70,7 @@ export const useWebSocket = (options: UseWebSocketOptions = {}) => {
 
   // Handle WebSocket events
   useEffect(() => {
-    const handleConnected = (event: WebSocketEvent) => {
+    const handleConnected = () => {
       setIsConnected(true);
       setConnectionState(getWebSocketConnectionState());
       setError(null);
@@ -83,7 +83,7 @@ export const useWebSocket = (options: UseWebSocketOptions = {}) => {
       });
     };
 
-    const handleDisconnected = (event: WebSocketEvent) => {
+    const handleDisconnected = () => {
       setIsConnected(false);
       setConnectionState(getWebSocketConnectionState());
       

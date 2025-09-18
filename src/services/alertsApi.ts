@@ -1,5 +1,5 @@
 import { api, retryRequest } from './api';
-import { Alert, ApiResponse } from '../types';
+import type { Alert, ApiResponse } from '../types';
 
 export interface AlertCreateData {
   type: 'signal' | 'price' | 'volume' | 'news' | 'whale' | 'social';

@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { coinsApi, CoinsQueryParams } from '../services/coinsApi';
-import { Coin } from '../types';
+import { coinsApi } from '../services/coinsApi';
+import type { CoinsQueryParams } from '../services/coinsApi';
+import type { Coin } from '../types';
 
 // Query keys
 export const coinsKeys = {

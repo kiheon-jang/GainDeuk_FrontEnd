@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { signalsApi, SignalsQueryParams } from '../services/signalsApi';
-import { Signal } from '../types';
+import { signalsApi } from '../services/signalsApi';
+import type { SignalsQueryParams } from '../services/signalsApi';
+import type { Signal } from '../types';
 
 // Query keys
 export const signalsKeys = {

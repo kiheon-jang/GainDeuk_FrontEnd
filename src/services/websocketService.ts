@@ -1,4 +1,4 @@
-import { WebSocketMessage } from '../types';
+import type { WebSocketMessage } from '../types';
 
 export type WebSocketEventType = 'signal_update' | 'price_update' | 'market_update' | 'error' | 'connected' | 'disconnected';
 
@@ -83,10 +83,11 @@ class WebSocketService {
         };
 
         this.ws.onerror = (error) => {
-          console.error('WebSocket error:', error);
+          console.warn('WebSocket connection failed - continuing without real-time updates:', error);
           this.isConnecting = false;
           this.emit('error', { error: 'WebSocket connection error' });
-          reject(error);
+          // Don't reject the promise to prevent app crashes
+          resolve();
         };
 
       } catch (error) {

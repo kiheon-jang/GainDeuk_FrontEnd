@@ -298,7 +298,7 @@ const Header: React.FC<HeaderProps> = ({ user, notificationCount = 0 }) => {
             <ProfileAvatar>
               {user?.name?.charAt(0).toUpperCase() || 'U'}
             </ProfileAvatar>
-            <span style={{ display: window.innerWidth > 768 ? 'block' : 'none' }}>
+            <span style={{ display: 'block' }}>
               {user?.name || '사용자'}
             </span>
           </ProfileButton>

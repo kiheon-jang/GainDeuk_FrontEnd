@@ -1,7 +1,24 @@
 import React from 'react';
-import toast, { Toaster, ToastOptions } from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import styled, { css } from 'styled-components';
 import { theme } from '../../styles/theme';
+
+// Define our own ToastOptions type
+interface ToastOptions {
+  duration?: number;
+  position?: 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';
+  style?: React.CSSProperties;
+  className?: string;
+  icon?: string | React.ReactNode;
+  iconTheme?: {
+    primary: string;
+    secondary: string;
+  };
+  ariaProps?: {
+    role: string;
+    'aria-live': string;
+  };
+}
 
 interface ToastProps {
   message: string;

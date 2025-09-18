@@ -1,5 +1,5 @@
 import { api, retryRequest } from './api';
-import { Coin, CoinFilters, ApiResponse } from '../types';
+import type { Coin, CoinFilters, ApiResponse } from '../types';
 
 export interface CoinsQueryParams {
   page?: number;

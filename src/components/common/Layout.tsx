@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { AnimatePresence } from 'framer-motion';
 import Header from './Header';
 import Footer from './Footer';
 import PageTransition from './PageTransition';
@@ -46,8 +45,12 @@ const Layout: React.FC<LayoutProps> = ({
   user, 
   notificationCount = 0 
 }) => {
-  // Initialize WebSocket connection
-  useWebSocket({ autoConnect: true });
+  // Initialize WebSocket connection with error handling
+  try {
+    useWebSocket({ autoConnect: true });
+  } catch (error) {
+    console.warn('WebSocket initialization failed:', error);
+  }
 
   return (
     <LayoutContainer>

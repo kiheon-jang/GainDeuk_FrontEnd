@@ -1,5 +1,5 @@
 import { api, retryRequest } from './api';
-import { AnalyticsData, ApiResponse } from '../types';
+import type { AnalyticsData, ApiResponse } from '../types';
 
 export interface OnchainDataParams {
   network?: 'ethereum' | 'bitcoin' | 'bsc' | 'polygon';
