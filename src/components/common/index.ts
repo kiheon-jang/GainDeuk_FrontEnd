@@ -43,3 +43,13 @@ export { default as AccessibilityPanel } from './AccessibilityPanel';
 export { default as AnimatedSection } from './AnimatedSection';
 export { default as AnimatedLoader } from './AnimatedLoader';
 export { default as HoverEffect } from './HoverEffect';
+export { default as ErrorBoundary } from './ErrorBoundary';
+export { 
+  default as FallbackUI,
+  LoadingFallback,
+  ErrorFallback,
+  EmptyFallback,
+  OfflineFallback,
+  NetworkFallback,
+  MaintenanceFallback
+} from './FallbackUI';

@@ -7,7 +7,9 @@ import ConnectionStatus from './ConnectionStatus';
 // import RealtimeAlerts from './RealtimeAlerts'; // Temporarily disabled
 import SkipLinks from './SkipLinks';
 import AccessibilityPanel from './AccessibilityPanel';
+import ErrorBoundary from './ErrorBoundary';
 import { useWebSocket } from '../../hooks/useWebSocket';
+import { useNetworkStatus } from '../../hooks/useNetworkStatus';
 import { theme } from '../../styles/theme';
 
 const LayoutContainer = styled.div`
@@ -54,6 +56,24 @@ const Layout: React.FC<LayoutProps> = ({
     console.warn('WebSocket initialization failed:', error);
   }
 
+  // Monitor network status
+  const networkStatus = useNetworkStatus({
+    onOffline: () => {
+      console.warn('Network connection lost');
+    },
+    onOnline: () => {
+      console.log('Network connection restored');
+    },
+    onSlowConnection: () => {
+      console.warn('Slow network connection detected');
+    }
+  });
+
+  const handleError = (error: Error, errorInfo: any, errorId: string) => {
+    console.error('Layout Error Boundary caught error:', error, errorInfo, errorId);
+    // Additional error handling logic can be added here
+  };
+
   return (
     <LayoutContainer>
       {/* Skip Links for keyboard navigation */}
@@ -65,22 +85,34 @@ const Layout: React.FC<LayoutProps> = ({
         ]}
       />
       
-      <Header user={user} notificationCount={notificationCount} />
+      <ErrorBoundary onError={handleError}>
+        <Header user={user} notificationCount={notificationCount} />
+      </ErrorBoundary>
+      
       <MainContent id="main-content" role="main">
         <ContentWrapper>
-          <PageTransition>
-            {children}
-          </PageTransition>
+          <ErrorBoundary onError={handleError}>
+            <PageTransition>
+              {children}
+            </PageTransition>
+          </ErrorBoundary>
         </ContentWrapper>
       </MainContent>
-      <Footer id="footer" />
+      
+      <ErrorBoundary onError={handleError}>
+        <Footer id="footer" />
+      </ErrorBoundary>
       
       {/* WebSocket related components */}
-      <ConnectionStatus />
+      <ErrorBoundary onError={handleError}>
+        <ConnectionStatus />
+      </ErrorBoundary>
       {/* <RealtimeAlerts /> */}
       
       {/* Accessibility Panel */}
-      <AccessibilityPanel />
+      <ErrorBoundary onError={handleError}>
+        <AccessibilityPanel />
+      </ErrorBoundary>
     </LayoutContainer>
   );
 };
