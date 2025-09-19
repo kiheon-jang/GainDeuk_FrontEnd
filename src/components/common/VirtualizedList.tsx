@@ -1,6 +1,5 @@
 import React, { memo, useCallback, useMemo, useEffect, useRef } from 'react';
 import { FixedSizeList as List } from 'react-window';
-import { FixedSizeGrid as Grid } from 'react-window';
 import styled from 'styled-components';
 import { theme, mediaQueries } from '../../styles/theme';
 
@@ -179,7 +178,7 @@ export const VirtualizedList = memo(<T,>({
 
 VirtualizedList.displayName = 'VirtualizedList';
 
-// Virtualized Grid Component
+// Virtualized Grid Component (using CSS Grid instead of react-window Grid)
 export const VirtualizedGrid = memo(<T,>({
   items,
   itemHeight,
@@ -192,58 +191,47 @@ export const VirtualizedGrid = memo(<T,>({
   onScroll,
   className
 }: VirtualizedGridProps<T>) => {
-  const rows = Math.ceil(items.length / columns);
+  const gridRef = useRef<HTMLDivElement>(null);
 
-  const handleScroll = useCallback(({ scrollTop }: { scrollTop: number }) => {
+  const handleScroll = useCallback((event: React.UIEvent<HTMLDivElement>) => {
+    const scrollTop = event.currentTarget.scrollTop;
     onScroll?.(scrollTop);
   }, [onScroll]);
 
-  const itemData = useMemo(() => ({
-    items,
-    renderItem,
-    columns
-  }), [items, renderItem, columns]);
-
-  const CellRenderer = useCallback(({ columnIndex, rowIndex, style, data }: any) => {
-    const { items, renderItem, columns } = data;
-    const index = rowIndex * columns + columnIndex;
-    const item = items[index];
-    
-    if (!item) {
-      return (
-        <div style={style}>
-          <div style={{ 
-            height: '100%', 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center',
-            color: theme.colors.textSecondary,
-            fontSize: '0.9rem'
-          }}>
-            로딩 중...
-          </div>
-        </div>
-      );
-    }
-
-    return renderItem({ columnIndex, rowIndex, style, item, index });
-  }, []);
+  const rows = Math.ceil(items.length / columns);
 
   return (
     <VirtualizedGridContainer className={className}>
-      <Grid
-        height={height}
-        width={width}
-        columnCount={columns}
-        columnWidth={itemWidth}
-        rowCount={rows}
-        rowHeight={itemHeight}
-        itemData={itemData}
-        overscanCount={overscanCount}
+      <div
+        ref={gridRef}
+        style={{
+          height,
+          width,
+          overflow: 'auto',
+          display: 'grid',
+          gridTemplateColumns: `repeat(${columns}, ${itemWidth}px)`,
+          gridTemplateRows: `repeat(${rows}, ${itemHeight}px)`,
+          gap: theme.spacing.sm
+        }}
         onScroll={handleScroll}
       >
-        {CellRenderer}
-      </Grid>
+        {items.map((item, index) => {
+          const rowIndex = Math.floor(index / columns);
+          const columnIndex = index % columns;
+          
+          return (
+            <div
+              key={index}
+              style={{
+                width: itemWidth,
+                height: itemHeight
+              }}
+            >
+              {renderItem({ columnIndex, rowIndex, style: {}, item, index })}
+            </div>
+          );
+        })}
+      </div>
     </VirtualizedGridContainer>
   );
 }) as <T>(props: VirtualizedGridProps<T>) => React.ReactElement;
