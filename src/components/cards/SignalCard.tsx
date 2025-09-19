@@ -429,7 +429,7 @@ const SignalCard: React.FC<SignalCardProps> = memo(({
       </CardFooter>
     </CardContainer>
   );
-};
+});
 
 SignalCard.displayName = 'SignalCard';
 
