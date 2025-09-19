@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { theme, mediaQueries } from '../styles/theme';
-import { PriceChart } from '../components/common';
+import { PriceChart, KimchiPremium } from '../components/common';
 import { useChartData } from '../hooks';
 
 const DashboardContainer = styled.div`
@@ -105,6 +105,10 @@ const ChartSection = styled.div`
   margin-bottom: ${theme.spacing.xl};
 `;
 
+const PremiumSection = styled.div`
+  margin-bottom: ${theme.spacing.xl};
+`;
+
 const SectionTitle = styled.h2`
   color: ${theme.colors.text};
   font-size: 1.8rem;
@@ -113,6 +117,16 @@ const SectionTitle = styled.h2`
   display: flex;
   align-items: center;
   gap: ${theme.spacing.sm};
+`;
+
+const PremiumGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: ${theme.spacing.lg};
+  
+  ${mediaQueries.mobile} {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const Dashboard: React.FC = () => {
@@ -148,6 +162,17 @@ const Dashboard: React.FC = () => {
           <StatLabel>신호 정확도</StatLabel>
         </StatCard>
       </StatsGrid>
+
+      <PremiumSection>
+        <SectionTitle>
+          🥟 김치 프리미엄
+        </SectionTitle>
+        <PremiumGrid>
+          <KimchiPremium symbol="BTC" />
+          <KimchiPremium symbol="ETH" />
+          <KimchiPremium symbol="ADA" />
+        </PremiumGrid>
+      </PremiumSection>
 
       <ChartSection>
         <SectionTitle>
