@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { motion, useInView, useAnimation } from 'framer-motion';
-import { useReducedMotion } from '../../hooks/useAccessibility';
 
 interface AnimatedSectionProps {
   children: React.ReactNode;
@@ -143,7 +142,8 @@ const AnimatedSection: React.FC<AnimatedSectionProps> = ({
     margin: "-50px 0px"
   });
   const controls = useAnimation();
-  const reducedMotion = useReducedMotion();
+  // Check for reduced motion preference using CSS media query
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   useEffect(() => {
     if (isInView) {

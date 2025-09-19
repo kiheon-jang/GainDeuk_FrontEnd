@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useReducedMotion } from '../../hooks/useAccessibility';
 
 interface HoverEffectProps {
   children: React.ReactNode;
@@ -99,7 +98,8 @@ const HoverEffect: React.FC<HoverEffectProps> = ({
   className,
   disabled = false
 }) => {
-  const reducedMotion = useReducedMotion();
+  // Check for reduced motion preference using CSS media query
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const variants = getHoverVariants(effect, intensity, reducedMotion);
 
   if (disabled || reducedMotion) {

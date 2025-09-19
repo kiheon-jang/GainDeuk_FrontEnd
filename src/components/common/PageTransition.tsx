@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
-import { useReducedMotion } from '../../hooks/useAccessibility';
 
 interface PageTransitionProps {
   children: React.ReactNode;
@@ -172,7 +171,8 @@ const PageTransition: React.FC<PageTransitionProps> = ({
   duration = 0.4
 }) => {
   const location = useLocation();
-  const reducedMotion = useReducedMotion();
+  // Check for reduced motion preference using CSS media query
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const pageVariants = useMemo(() => 
     getPageVariants(transitionType, direction, reducedMotion), 

@@ -2,7 +2,6 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
 import { theme } from '../../styles/theme';
-import { useReducedMotion } from '../../hooks/useAccessibility';
 
 interface AnimatedLoaderProps {
   size?: 'sm' | 'md' | 'lg';
@@ -125,7 +124,8 @@ const AnimatedLoader: React.FC<AnimatedLoaderProps> = ({
   text,
   fullScreen = false
 }) => {
-  const reducedMotion = useReducedMotion();
+  // Check for reduced motion preference using CSS media query
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const renderLoader = () => {
     if (reducedMotion) {

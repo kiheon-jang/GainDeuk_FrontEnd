@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { theme } from '../../styles/theme';
-import { useFocusTrap } from '../../hooks/useAccessibility';
 
 interface ModalProps {
   isOpen: boolean;
@@ -171,7 +170,6 @@ const Modal: React.FC<ModalProps> = ({
   ariaDescribedby
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
-  const focusTrapRef = useFocusTrap(isOpen);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -243,10 +241,7 @@ const Modal: React.FC<ModalProps> = ({
           onClick={handleOverlayClick}
         >
           <ModalContainer
-            ref={(el) => {
-              if (modalRef.current) modalRef.current = el;
-              if (focusTrapRef.current) focusTrapRef.current = el;
-            }}
+            ref={modalRef}
             size={size}
             variant={variant}
             className={className}
