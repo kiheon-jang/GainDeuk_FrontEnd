@@ -1,7 +1,9 @@
-import React, { memo, useCallback, useMemo, useEffect, useRef } from 'react';
-import { FixedSizeList as List } from 'react-window';
+import React, { memo, useCallback, useMemo, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { theme, mediaQueries } from '../../styles/theme';
+
+// Dynamic import for react-window to avoid module resolution issues
+let List: any = null;
 
 interface VirtualizedListProps<T> {
   items: T[];
@@ -74,18 +76,36 @@ export const VirtualizedList = memo(<T,>({
   restoreScrollPosition = false,
   scrollPositionKey
 }: VirtualizedListProps<T>) => {
-  const listRef = useRef<List>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const listRef = useRef<any>(null);
+
+  // Dynamic import of react-window
+  useEffect(() => {
+    const loadReactWindow = async () => {
+      try {
+        const { FixedSizeList } = await import('react-window');
+        List = FixedSizeList;
+        setIsLoaded(true);
+      } catch (error) {
+        console.error('Failed to load react-window:', error);
+        // Fallback to regular div rendering
+        setIsLoaded(true);
+      }
+    };
+    
+    loadReactWindow();
+  }, []);
 
   // Scroll restoration logic
   useEffect(() => {
-    if (restoreScrollPosition && scrollPositionKey && listRef.current) {
+    if (restoreScrollPosition && scrollPositionKey && listRef.current && isLoaded) {
       const savedPosition = sessionStorage.getItem(`scroll-${scrollPositionKey}`);
       if (savedPosition) {
         const position = parseInt(savedPosition, 10);
         listRef.current.scrollTo(position);
       }
     }
-  }, [restoreScrollPosition, scrollPositionKey]);
+  }, [restoreScrollPosition, scrollPositionKey, isLoaded]);
 
   const handleScroll = useCallback(({ scrollOffset, scrollUpdateWasRequested }: { scrollOffset: number; scrollUpdateWasRequested: boolean }) => {
     onScroll?.(scrollOffset);
@@ -156,6 +176,21 @@ export const VirtualizedList = memo(<T,>({
 
   // Calculate total item count including loading indicator
   const itemCount = items.length + (hasNextPage ? 1 : 0);
+
+  // Fallback rendering if react-window is not loaded
+  if (!isLoaded || !List) {
+    return (
+      <VirtualizedListContainer className={className}>
+        <div style={{ height, width, overflow: 'auto' }}>
+          {items.map((item, index) => (
+            <div key={index} style={{ height: itemHeight }}>
+              {renderItem({ index, style: { height: itemHeight }, item })}
+            </div>
+          ))}
+        </div>
+      </VirtualizedListContainer>
+    );
+  }
 
   return (
     <VirtualizedListContainer className={className}>
