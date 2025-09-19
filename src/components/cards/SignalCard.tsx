@@ -340,13 +340,13 @@ const SignalCard: React.FC<SignalCardProps> = memo(({
   }, [onClick, signal, isLoading]);
 
   const isPositiveChange = useMemo(() => 
-    signal.metadata.priceData.change_24h >= 0, 
-    [signal.metadata.priceData.change_24h]
+    (signal.metadata?.priceData?.change_24h ?? 0) >= 0, 
+    [signal.metadata?.priceData?.change_24h]
   );
   
   const priceChangePercentage = useMemo(() => 
-    Math.abs(signal.metadata.priceData.change_24h), 
-    [signal.metadata.priceData.change_24h]
+    Math.abs(signal.metadata?.priceData?.change_24h ?? 0), 
+    [signal.metadata?.priceData?.change_24h]
   );
 
   const cardVariants = useMemo(() => ({

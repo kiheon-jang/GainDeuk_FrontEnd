@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 interface NetworkStatus {
   isOnline: boolean;
@@ -24,6 +24,16 @@ export const useNetworkStatus = (options: UseNetworkStatusOptions = {}) => {
     slowConnectionThreshold = 1.5 // 1.5 Mbps threshold
   } = options;
 
+  // Use refs to store callbacks to avoid dependency issues
+  const onOnlineRef = useRef(onOnline);
+  const onOfflineRef = useRef(onOffline);
+  const onSlowConnectionRef = useRef(onSlowConnection);
+
+  // Update refs when callbacks change
+  onOnlineRef.current = onOnline;
+  onOfflineRef.current = onOffline;
+  onSlowConnectionRef.current = onSlowConnection;
+
   const [networkStatus, setNetworkStatus] = useState<NetworkStatus>({
     isOnline: navigator.onLine,
     isSlowConnection: false,
@@ -33,43 +43,45 @@ export const useNetworkStatus = (options: UseNetworkStatusOptions = {}) => {
     rtt: null
   });
 
-  const updateNetworkStatus = useCallback(() => {
-    const connection = (navigator as any).connection || 
-                      (navigator as any).mozConnection || 
-                      (navigator as any).webkitConnection;
+  useEffect(() => {
+    const updateNetworkStatus = () => {
+      const connection = (navigator as any).connection || 
+                        (navigator as any).mozConnection || 
+                        (navigator as any).webkitConnection;
 
-    const isOnline = navigator.onLine;
-    const downlink = connection?.downlink || null;
-    const rtt = connection?.rtt || null;
-    const effectiveType = connection?.effectiveType || null;
-    const connectionType = connection?.type || null;
+      const isOnline = navigator.onLine;
+      const downlink = connection?.downlink || null;
+      const rtt = connection?.rtt || null;
+      const effectiveType = connection?.effectiveType || null;
+      const connectionType = connection?.type || null;
 
-    const isSlowConnection = downlink !== null && downlink < slowConnectionThreshold;
+      const isSlowConnection = downlink !== null && downlink < slowConnectionThreshold;
 
-    const newStatus: NetworkStatus = {
-      isOnline,
-      isSlowConnection,
-      connectionType,
-      effectiveType,
-      downlink,
-      rtt
+      const newStatus: NetworkStatus = {
+        isOnline,
+        isSlowConnection,
+        connectionType,
+        effectiveType,
+        downlink,
+        rtt
+      };
+
+      setNetworkStatus(prevStatus => {
+        // Trigger callbacks only when status actually changes
+        if (isOnline && !prevStatus.isOnline) {
+          onOnlineRef.current?.();
+        } else if (!isOnline && prevStatus.isOnline) {
+          onOfflineRef.current?.();
+        }
+
+        if (isSlowConnection && !prevStatus.isSlowConnection) {
+          onSlowConnectionRef.current?.();
+        }
+
+        return newStatus;
+      });
     };
 
-    setNetworkStatus(newStatus);
-
-    // Trigger callbacks
-    if (isOnline && !networkStatus.isOnline) {
-      onOnline?.();
-    } else if (!isOnline && networkStatus.isOnline) {
-      onOffline?.();
-    }
-
-    if (isSlowConnection && !networkStatus.isSlowConnection) {
-      onSlowConnection?.();
-    }
-  }, [networkStatus.isOnline, networkStatus.isSlowConnection, onOnline, onOffline, onSlowConnection, slowConnectionThreshold]);
-
-  useEffect(() => {
     // Initial check
     updateNetworkStatus();
 
@@ -97,7 +109,8 @@ export const useNetworkStatus = (options: UseNetworkStatusOptions = {}) => {
         connection.removeEventListener('change', updateNetworkStatus);
       }
     };
-  }, [updateNetworkStatus]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty dependency array to prevent infinite re-renders
 
   return networkStatus;
 };

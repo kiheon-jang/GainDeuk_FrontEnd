@@ -6,6 +6,11 @@ export interface WebSocketEvent {
   type: WebSocketEventType;
   data: any;
   timestamp: string;
+  error?: string;
+  code?: number;
+  reason?: string;
+  url?: string;
+  message?: string;
 }
 
 export type WebSocketEventHandler = (event: WebSocketEvent) => void;
@@ -22,8 +27,13 @@ class WebSocketService {
   private heartbeatTimeout: NodeJS.Timeout | null = null;
 
   constructor() {
-    this.url = import.meta.env.VITE_WS_URL || 'ws://localhost:3000/ws/signals';
+    // Use proxy in development, direct URL in production
+    this.url = import.meta.env.VITE_WS_URL || 
+      (import.meta.env.DEV ? 'ws://localhost:5173/ws/signals' : 'ws://localhost:3000/ws/signals');
     this.setupEventHandlers();
+    
+    // Log WebSocket URL for debugging
+    console.log('WebSocket URL:', this.url);
   }
 
   private setupEventHandlers(): void {
@@ -50,6 +60,13 @@ class WebSocketService {
       this.isConnecting = true;
 
       try {
+        // Check if we're in a browser environment
+        if (typeof window === 'undefined') {
+          this.isConnecting = false;
+          reject(new Error('WebSocket is not available in this environment'));
+          return;
+        }
+
         this.ws = new WebSocket(this.url);
 
         this.ws.onopen = () => {
@@ -57,7 +74,11 @@ class WebSocketService {
           this.isConnecting = false;
           this.reconnectAttempts = 0;
           this.startHeartbeat();
-          this.emit('connected', {});
+          this.emit('connected', {
+            type: 'connected',
+            data: {},
+            timestamp: new Date().toISOString()
+          });
           resolve();
         };
 
@@ -67,7 +88,11 @@ class WebSocketService {
             this.handleMessage(message);
           } catch (error) {
             console.error('Failed to parse WebSocket message:', error);
-            this.emit('error', { error: 'Failed to parse message' });
+            this.emit('error', { 
+              type: 'error',
+              data: { error: 'Failed to parse message' },
+              timestamp: new Date().toISOString()
+            });
           }
         };
 
@@ -75,7 +100,11 @@ class WebSocketService {
           console.log('WebSocket disconnected:', event.code, event.reason);
           this.isConnecting = false;
           this.stopHeartbeat();
-          this.emit('disconnected', { code: event.code, reason: event.reason });
+          this.emit('disconnected', { 
+            type: 'disconnected',
+            data: { code: event.code, reason: event.reason },
+            timestamp: new Date().toISOString()
+          });
           
           if (!event.wasClean && this.reconnectAttempts < this.maxReconnectAttempts) {
             this.scheduleReconnect();
@@ -84,8 +113,18 @@ class WebSocketService {
 
         this.ws.onerror = (error) => {
           console.warn('WebSocket connection failed - continuing without real-time updates:', error);
+          console.warn('WebSocket URL attempted:', this.url);
+          console.warn('Make sure the WebSocket server is running on the correct port');
           this.isConnecting = false;
-          this.emit('error', { error: 'WebSocket connection error' });
+          this.emit('error', { 
+            type: 'error',
+            data: { 
+              error: 'WebSocket connection error',
+              url: this.url,
+              message: 'WebSocket 서버에 연결할 수 없습니다. 서버가 실행 중인지 확인해주세요.'
+            },
+            timestamp: new Date().toISOString()
+          });
           // Don't reject the promise to prevent app crashes
           resolve();
         };
@@ -148,6 +187,25 @@ class WebSocketService {
         return 'CLOSED';
       default:
         return 'UNKNOWN';
+    }
+  }
+
+  public async checkServerAvailability(): Promise<boolean> {
+    try {
+      // Try to fetch the server health endpoint first
+      const httpUrl = this.url.replace('ws://', 'http://').replace('wss://', 'https://');
+      const healthUrl = httpUrl.replace('/ws/signals', '/health');
+      
+      await fetch(healthUrl, { 
+        method: 'GET',
+        mode: 'no-cors', // Allow cross-origin requests
+        cache: 'no-cache'
+      });
+      
+      return true;
+    } catch (error) {
+      console.warn('Server health check failed:', error);
+      return false;
     }
   }
 

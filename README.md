@@ -1,4 +1,30 @@
-# React + TypeScript + Vite
+# GainDeuk Frontend
+
+A React + TypeScript + Vite application for cryptocurrency signal tracking with real-time WebSocket updates.
+
+## Features
+
+- Real-time cryptocurrency signal updates via WebSocket
+- Responsive dashboard with charts and analytics
+- Network status monitoring
+- Error handling and recovery
+- Performance optimization
+
+## WebSocket Configuration
+
+The application uses WebSocket for real-time updates. To configure the WebSocket connection:
+
+1. Create a `.env` file in the project root:
+```bash
+VITE_WS_URL=ws://localhost:3000/ws/signals
+VITE_API_BASE_URL=http://localhost:3000/api
+```
+
+2. Make sure your WebSocket server is running on the configured port (default: 3000)
+
+3. The application will gracefully handle WebSocket connection failures and continue to work without real-time updates
+
+## Development Setup
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 

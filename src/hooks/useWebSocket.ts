@@ -35,6 +35,17 @@ export const useWebSocket = (options: UseWebSocketOptions = {}) => {
   const connect = async () => {
     try {
       setError(null);
+      
+      // Check server availability first
+      const isServerAvailable = await websocketService.checkServerAvailability();
+      if (!isServerAvailable) {
+        console.warn('WebSocket server is not available');
+        setError('WebSocket 서버에 연결할 수 없습니다. 서버가 실행 중인지 확인해주세요.');
+        setIsConnected(false);
+        setConnectionState(getWebSocketConnectionState());
+        return;
+      }
+      
       await connectWebSocket();
       setIsConnected(true);
       setConnectionState(getWebSocketConnectionState());

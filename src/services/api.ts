@@ -1,10 +1,9 @@
 import axios from 'axios';
-import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
+import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError, InternalAxiosRequestConfig } from 'axios';
 import type { ApiResponse } from '../types';
-import { useErrorLogger } from '../hooks/useErrorLogger';
 
 // API Configuration
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api'; // Use proxy in development
 const REQUEST_TIMEOUT = 10000; // 10 seconds
 
 // Create Axios instance
@@ -18,7 +17,7 @@ const apiClient: AxiosInstance = axios.create({
 
 // Request interceptor for adding authentication headers
 apiClient.interceptors.request.use(
-  (config: AxiosRequestConfig) => {
+  (config: InternalAxiosRequestConfig) => {
     // Get token from localStorage or state management
     const token = localStorage.getItem('authToken');
     
@@ -27,7 +26,7 @@ apiClient.interceptors.request.use(
     }
 
     // Add request timestamp for debugging
-    config.metadata = { startTime: new Date() };
+    (config as any).metadata = { startTime: new Date() };
     
     return config;
   },
@@ -92,7 +91,7 @@ apiClient.interceptors.response.use(
   (response: AxiosResponse) => {
     // Log response time for debugging
     const endTime = new Date();
-    const startTime = response.config.metadata?.startTime;
+    const startTime = (response.config as any).metadata?.startTime;
     if (startTime) {
       const duration = endTime.getTime() - startTime.getTime();
       console.log(`API Request to ${response.config.url} took ${duration}ms`);
@@ -136,7 +135,7 @@ apiClient.interceptors.response.use(
 
       return Promise.reject({
         status,
-        message: data?.message || `HTTP Error ${status}`,
+        message: (data as any)?.message || `HTTP Error ${status}`,
         data: data,
         url: config?.url,
         method: config?.method
@@ -195,7 +194,7 @@ export const api = {
 export const retryRequest = async <T>(
   requestFn: () => Promise<T>,
   maxRetries: number = 3,
-  delay: number = 1000
+  delay: number = 3000 // Increase initial delay to 3 seconds
 ): Promise<T> => {
   let lastError: any;
 
@@ -206,14 +205,30 @@ export const retryRequest = async <T>(
       lastError = error;
       
       // Don't retry for certain error types
-      if (error.status === 401 || error.status === 403 || error.status === 404) {
+      if (error.response?.status === 401 || 
+          error.response?.status === 403 || 
+          error.response?.status === 404 ||
+          error.code === 'ERR_NETWORK') {
+        console.warn(`Request failed with non-retryable error:`, error.message);
         throw error;
       }
 
+      // Handle rate limiting (429) with longer delay
+      if (error.response?.status === 429) {
+        console.warn(`Rate limited (429), waiting ${delay * 2}ms before retry...`);
+        if (attempt < maxRetries) {
+          await new Promise(resolve => setTimeout(resolve, delay * 2));
+          delay *= 3; // Exponential backoff for rate limiting
+          continue;
+        }
+      }
+
       if (attempt < maxRetries) {
-        console.log(`Request failed, retrying in ${delay}ms... (attempt ${attempt}/${maxRetries})`);
+        console.log(`Request failed, retrying in ${delay}ms... (attempt ${attempt + 1}/${maxRetries})`);
         await new Promise(resolve => setTimeout(resolve, delay));
         delay *= 2; // Exponential backoff
+      } else {
+        console.error(`Request failed after ${maxRetries} attempts:`, error.message);
       }
     }
   }
