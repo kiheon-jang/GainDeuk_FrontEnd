@@ -6,3 +6,6 @@ export * from './useChartData';
 
 // Query client
 export { queryClient } from './useQueryClient';
+
+// Accessibility hooks
+export * from './useAccessibility';

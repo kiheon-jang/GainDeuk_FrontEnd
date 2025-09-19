@@ -185,15 +185,29 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
   leftIcon,
   rightIcon,
   className,
+  id,
+  required,
   ...props
 }, ref) => {
   const hasError = Boolean(error);
   const hasLeftIcon = Boolean(leftIcon);
   const hasRightIcon = Boolean(rightIcon);
+  
+  // Generate unique IDs for accessibility
+  const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
+  const errorId = hasError ? `${inputId}-error` : undefined;
+  const helperTextId = helperText ? `${inputId}-helper` : undefined;
+  
+  const ariaDescribedBy = [errorId, helperTextId].filter(Boolean).join(' ') || undefined;
 
   return (
     <InputContainer fullWidth={fullWidth} className={className}>
-      {label && <Label>{label}</Label>}
+      {label && (
+        <Label htmlFor={inputId}>
+          {label}
+          {required && <span aria-label="필수 입력 항목"> *</span>}
+        </Label>
+      )}
       <InputWrapper 
         variant={variant} 
         size={size} 
@@ -202,28 +216,37 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
         hasRightIcon={hasRightIcon}
       >
         {leftIcon && (
-          <IconWrapper position="left" size={size}>
+          <IconWrapper position="left" size={size} aria-hidden="true">
             {leftIcon}
           </IconWrapper>
         )}
         <StyledInput
           ref={ref}
+          id={inputId}
           variant={variant}
           size={size}
           hasError={hasError}
           hasLeftIcon={hasLeftIcon}
           hasRightIcon={hasRightIcon}
+          aria-invalid={hasError}
+          aria-describedby={ariaDescribedBy}
+          aria-required={required}
           {...props}
         />
         {rightIcon && (
-          <IconWrapper position="right" size={size}>
+          <IconWrapper position="right" size={size} aria-hidden="true">
             {rightIcon}
           </IconWrapper>
         )}
       </InputWrapper>
-      {(error || helperText) && (
-        <HelperText hasError={hasError}>
-          {error || helperText}
+      {error && (
+        <HelperText hasError={true} id={errorId} role="alert" aria-live="polite">
+          {error}
+        </HelperText>
+      )}
+      {helperText && !error && (
+        <HelperText hasError={false} id={helperTextId}>
+          {helperText}
         </HelperText>
       )}
     </InputContainer>

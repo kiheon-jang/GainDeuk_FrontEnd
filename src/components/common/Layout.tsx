@@ -4,7 +4,9 @@ import Header from './Header';
 import Footer from './Footer';
 import PageTransition from './PageTransition';
 import ConnectionStatus from './ConnectionStatus';
-import RealtimeAlerts from './RealtimeAlerts';
+// import RealtimeAlerts from './RealtimeAlerts'; // Temporarily disabled
+import SkipLinks from './SkipLinks';
+import AccessibilityPanel from './AccessibilityPanel';
 import { useWebSocket } from '../../hooks/useWebSocket';
 import { theme } from '../../styles/theme';
 
@@ -54,19 +56,31 @@ const Layout: React.FC<LayoutProps> = ({
 
   return (
     <LayoutContainer>
+      {/* Skip Links for keyboard navigation */}
+      <SkipLinks
+        links={[
+          { target: 'main-content', label: '메인 콘텐츠로 건너뛰기' },
+          { target: 'navigation', label: '주 메뉴로 건너뛰기' },
+          { target: 'footer', label: '푸터로 건너뛰기' }
+        ]}
+      />
+      
       <Header user={user} notificationCount={notificationCount} />
-      <MainContent>
+      <MainContent id="main-content" role="main">
         <ContentWrapper>
           <PageTransition>
             {children}
           </PageTransition>
         </ContentWrapper>
       </MainContent>
-      <Footer />
+      <Footer id="footer" />
       
       {/* WebSocket related components */}
       <ConnectionStatus />
-      <RealtimeAlerts />
+      {/* <RealtimeAlerts /> */}
+      
+      {/* Accessibility Panel */}
+      <AccessibilityPanel />
     </LayoutContainer>
   );
 };

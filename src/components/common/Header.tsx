@@ -267,19 +267,20 @@ const Header: React.FC<HeaderProps> = ({ user, notificationCount = 0 }) => {
   };
 
   return (
-    <HeaderContainer>
+    <HeaderContainer role="banner">
       <HeaderContent>
-        <Logo to="/">
-          <LogoIcon>G</LogoIcon>
+        <Logo to="/" aria-label="GainDeuk 홈으로 이동">
+          <LogoIcon aria-hidden="true">G</LogoIcon>
           GainDeuk
         </Logo>
 
-        <Navigation>
+        <Navigation role="navigation" aria-label="주 메뉴">
           {navigationItems.map((item) => (
             <NavLink
               key={item.path}
               to={item.path}
               $isActive={location.pathname === item.path}
+              aria-current={location.pathname === item.path ? 'page' : undefined}
             >
               {item.label}
             </NavLink>
@@ -289,13 +290,23 @@ const Header: React.FC<HeaderProps> = ({ user, notificationCount = 0 }) => {
         <UserSection>
           <ConnectionStatus showText={false} />
           
-          <NotificationButton>
-            🔔
-            {notificationCount > 0 && <NotificationBadge />}
+          <NotificationButton
+            aria-label={`알림 ${notificationCount > 0 ? `(${notificationCount}개의 새 알림)` : ''}`}
+            role="button"
+            tabIndex={0}
+          >
+            <span aria-hidden="true">🔔</span>
+            {notificationCount > 0 && (
+              <NotificationBadge aria-label={`${notificationCount}개의 새 알림`} />
+            )}
           </NotificationButton>
 
-          <ProfileButton>
-            <ProfileAvatar>
+          <ProfileButton
+            aria-label={`사용자 프로필 메뉴 (${user?.name || '사용자'})`}
+            role="button"
+            tabIndex={0}
+          >
+            <ProfileAvatar aria-hidden="true">
               {user?.name?.charAt(0).toUpperCase() || 'U'}
             </ProfileAvatar>
             <span style={{ display: 'block' }}>
@@ -303,13 +314,24 @@ const Header: React.FC<HeaderProps> = ({ user, notificationCount = 0 }) => {
             </span>
           </ProfileButton>
 
-          <MobileMenuButton onClick={toggleMobileMenu}>
-            ☰
+          <MobileMenuButton
+            onClick={toggleMobileMenu}
+            aria-label={isMobileMenuOpen ? '모바일 메뉴 닫기' : '모바일 메뉴 열기'}
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-menu"
+          >
+            <span aria-hidden="true">☰</span>
           </MobileMenuButton>
         </UserSection>
       </HeaderContent>
 
-      <MobileMenu $isOpen={isMobileMenuOpen}>
+      <MobileMenu
+        id="mobile-menu"
+        $isOpen={isMobileMenuOpen}
+        role="navigation"
+        aria-label="모바일 메뉴"
+        aria-hidden={!isMobileMenuOpen}
+      >
         {navigationItems.map((item) => (
           <MobileNavLink
             key={item.path}

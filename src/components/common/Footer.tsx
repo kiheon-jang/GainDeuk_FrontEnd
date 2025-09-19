@@ -148,9 +148,13 @@ const StatusDot = styled.div`
   animation: pulse 2s infinite;
 `;
 
-const Footer: React.FC = () => {
+interface FooterProps {
+  id?: string;
+}
+
+const Footer: React.FC<FooterProps> = ({ id }) => {
   return (
-    <FooterContainer>
+    <FooterContainer id={id}>
       <FooterContent>
         <FooterTop>
           <FooterSection>

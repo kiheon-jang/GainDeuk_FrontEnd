@@ -8,6 +8,8 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   fullWidth?: boolean;
   loading?: boolean;
   children: React.ReactNode;
+  loadingText?: string;
+  iconOnly?: boolean;
 }
 
 const ButtonBase = styled.button<ButtonProps>`
@@ -28,6 +30,20 @@ const ButtonBase = styled.button<ButtonProps>`
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+  }
+
+  &:focus {
+    outline: 2px solid ${theme.colors.primary};
+    outline-offset: 2px;
+  }
+
+  &:focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${theme.colors.primary};
+    outline-offset: 2px;
   }
 
   ${props => props.fullWidth && css`
@@ -141,18 +157,37 @@ const Button: React.FC<ButtonProps> = ({
   loading = false,
   children,
   disabled,
+  loadingText = '로딩 중...',
+  iconOnly = false,
+  'aria-label': ariaLabel,
   ...props
 }) => {
+  const buttonProps = {
+    variant,
+    size,
+    fullWidth,
+    disabled: disabled || loading,
+    'aria-busy': loading,
+    'aria-label': iconOnly ? ariaLabel : undefined,
+    ...props
+  };
+
   return (
-    <ButtonBase
-      variant={variant}
-      size={size}
-      fullWidth={fullWidth}
-      disabled={disabled || loading}
-      {...props}
-    >
-      {loading && <LoadingSpinner />}
-      {children}
+    <ButtonBase {...buttonProps}>
+      {loading && (
+        <>
+          <LoadingSpinner aria-hidden="true" />
+          <span className="sr-only">{loadingText}</span>
+        </>
+      )}
+      {iconOnly && !loading ? (
+        <>
+          {children}
+          <span className="sr-only">{ariaLabel}</span>
+        </>
+      ) : (
+        children
+      )}
     </ButtonBase>
   );
 };

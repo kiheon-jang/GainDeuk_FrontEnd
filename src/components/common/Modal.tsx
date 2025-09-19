@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { theme } from '../../styles/theme';
+import { useFocusTrap } from '../../hooks/useAccessibility';
 
 interface ModalProps {
   isOpen: boolean;
@@ -14,6 +15,8 @@ interface ModalProps {
   closeOnEscape?: boolean;
   showCloseButton?: boolean;
   className?: string;
+  ariaLabel?: string;
+  ariaDescribedby?: string;
 }
 
 const Overlay = styled(motion.div)`
@@ -164,8 +167,11 @@ const Modal: React.FC<ModalProps> = ({
   closeOnEscape = true,
   showCloseButton = true,
   className,
+  ariaLabel,
+  ariaDescribedby
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
+  const focusTrapRef = useFocusTrap(isOpen);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -237,7 +243,10 @@ const Modal: React.FC<ModalProps> = ({
           onClick={handleOverlayClick}
         >
           <ModalContainer
-            ref={modalRef}
+            ref={(el) => {
+              if (modalRef.current) modalRef.current = el;
+              if (focusTrapRef.current) focusTrapRef.current = el;
+            }}
             size={size}
             variant={variant}
             className={className}
@@ -250,6 +259,8 @@ const Modal: React.FC<ModalProps> = ({
             role="dialog"
             aria-modal="true"
             aria-labelledby={title ? 'modal-title' : undefined}
+            aria-label={!title ? ariaLabel : undefined}
+            aria-describedby={ariaDescribedby}
           >
             {title && (
               <ModalHeader>
