@@ -7,8 +7,6 @@ export * from './useChartData';
 // Query client
 export { queryClient } from './useQueryClient';
 
-// Accessibility hooks
-export * from './useAccessibility';
 export { default as useNetworkStatus } from './useNetworkStatus';
 export { default as useErrorLogger } from './useErrorLogger';
 export { 

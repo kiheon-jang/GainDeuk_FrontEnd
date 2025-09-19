@@ -65,5 +65,3 @@ button:focus-visible {
   }
 }
 
-/* Import accessibility styles */
-@import url('./styles/accessibility.css');
