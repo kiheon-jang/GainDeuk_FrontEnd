@@ -1,0 +1,47 @@
+{
+  "data": [
+    {
+      "_id": "1",
+      "coinId": "bitcoin",
+      "symbol": "BTC",
+      "name": "Bitcoin",
+      "finalScore": 95,
+      "breakdown": {
+        "price": 25,
+        "volume": 20,
+        "market": 20,
+        "sentiment": 15,
+        "whale": 20
+      },
+      "recommendation": {
+        "action": "BUY",
+        "confidence": "HIGH"
+      },
+      "timeframe": "DAY_TRADING",
+      "priority": "high_priority",
+      "rank": 1,
+      "currentPrice": 50000,
+      "marketCap": 1000000000000,
+      "metadata": {
+        "priceData": {
+          "change_1h": 1.2,
+          "change_24h": 5.2,
+          "change_7d": 12.5,
+          "change_30d": 25.8
+        },
+        "volumeRatio": 1.5,
+        "whaleActivity": 0.8,
+        "newsCount": 15,
+        "lastUpdated": "2024-01-01T00:00:00Z",
+        "calculationTime": 150,
+        "dataQuality": "excellent"
+      },
+      "createdAt": "2024-01-01T00:00:00Z",
+      "updatedAt": "2024-01-01T00:00:00Z",
+      "isStrongSignal": true,
+      "isBuySignal": true,
+      "isSellSignal": false
+    }
+  ],
+  "success": true
+}

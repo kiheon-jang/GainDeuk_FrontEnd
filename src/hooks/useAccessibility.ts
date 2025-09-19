@@ -252,7 +252,7 @@ export const useReducedMotion = () => {
 
 // Generate unique IDs for ARIA relationships
 export const useId = (prefix?: string) => {
-  const id = useRef<string>();
+  const id = useRef<string>('');
   
   if (!id.current) {
     id.current = `${prefix || 'id'}-${Math.random().toString(36).substr(2, 9)}`;

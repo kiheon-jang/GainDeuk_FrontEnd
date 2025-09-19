@@ -133,7 +133,7 @@ export const usePerformanceMetrics = (options: UsePerformanceMetricsOptions = {}
         { name: 'dom_content_loaded', value: navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart },
         { name: 'load_complete', value: navigation.loadEventEnd - navigation.loadEventStart },
         { name: 'first_byte', value: navigation.responseStart - navigation.requestStart },
-        { name: 'dom_processing', value: navigation.domComplete - navigation.domLoading }
+        { name: 'dom_processing', value: navigation.domComplete - (navigation as any).domLoading }
       ];
 
       metrics.forEach(metric => {

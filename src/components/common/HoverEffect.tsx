@@ -31,7 +31,7 @@ const getHoverVariants = (effect: string, intensity: string, reducedMotion: bool
           boxShadow: `0 ${8 * intensityMultiplier}px ${16 * intensityMultiplier}px rgba(0, 0, 0, 0.1)`,
           transition: {
             duration: 0.2,
-            ease: 'easeOut'
+            ease: 'easeOut' as any
           }
         }
       };
@@ -42,7 +42,7 @@ const getHoverVariants = (effect: string, intensity: string, reducedMotion: bool
           scale: 1 + (0.05 * intensityMultiplier),
           transition: {
             duration: 0.2,
-            ease: 'easeOut'
+            ease: 'easeOut' as any
           }
         }
       };
@@ -53,7 +53,7 @@ const getHoverVariants = (effect: string, intensity: string, reducedMotion: bool
           boxShadow: `0 0 ${20 * intensityMultiplier}px rgba(229, 9, 20, ${0.3 * intensityMultiplier})`,
           transition: {
             duration: 0.3,
-            ease: 'easeOut'
+            ease: 'easeOut' as any
           }
         }
       };
@@ -65,7 +65,7 @@ const getHoverVariants = (effect: string, intensity: string, reducedMotion: bool
           rotateX: 5 * intensityMultiplier,
           transition: {
             duration: 0.3,
-            ease: 'easeOut'
+            ease: 'easeOut' as any
           }
         }
       };
