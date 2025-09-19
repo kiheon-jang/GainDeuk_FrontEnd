@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { theme, mediaQueries } from '../styles/theme';
-import { PriceChart, KimchiPremium, Skeleton } from '../components/common';
+import { PriceChart, KimchiPremium, Skeleton, AnimatedSection, HoverEffect } from '../components/common';
 import { SignalCard } from '../components/cards';
 import { useChartData, useTopSignals, useKoreanMarketStats } from '../hooks';
 import type { Signal } from '../types';
@@ -492,30 +492,35 @@ const Dashboard: React.FC = () => {
 
   return (
     <DashboardContainer>
-      <WelcomeSection>
-        <WelcomeTitle>🚀 GainDeuk 대시보드</WelcomeTitle>
-        <WelcomeSubtitle>
-          AI 기반 암호화폐 투자 신호 분석 서비스
-        </WelcomeSubtitle>
-      </WelcomeSection>
+      <AnimatedSection animation="fadeIn" delay={0.1}>
+        <WelcomeSection>
+          <WelcomeTitle>🚀 GainDeuk 대시보드</WelcomeTitle>
+          <WelcomeSubtitle>
+            AI 기반 암호화폐 투자 신호 분석 서비스
+          </WelcomeSubtitle>
+        </WelcomeSection>
+      </AnimatedSection>
 
       {/* Real-time Alert Banner */}
-      <AlertBanner type={mockAlert.type}>
-        <AlertIcon>{mockAlert.icon}</AlertIcon>
-        <AlertContent>
-          <AlertTitle>{mockAlert.title}</AlertTitle>
-          <AlertMessage>{mockAlert.message}</AlertMessage>
-        </AlertContent>
-        <AlertTime>{mockAlert.time}</AlertTime>
-      </AlertBanner>
+      <AnimatedSection animation="slideUp" delay={0.2}>
+        <AlertBanner type={mockAlert.type}>
+          <AlertIcon>{mockAlert.icon}</AlertIcon>
+          <AlertContent>
+            <AlertTitle>{mockAlert.title}</AlertTitle>
+            <AlertMessage>{mockAlert.message}</AlertMessage>
+          </AlertContent>
+          <AlertTime>{mockAlert.time}</AlertTime>
+        </AlertBanner>
+      </AnimatedSection>
 
       {/* Market Overview Section */}
-      <MarketOverviewSection>
-        <SectionTitle>
-          📊 실시간 시장 개요
-        </SectionTitle>
-        
-        <MarketStatsGrid>
+      <AnimatedSection animation="slideUp" delay={0.3}>
+        <MarketOverviewSection>
+          <SectionTitle>
+            📊 실시간 시장 개요
+          </SectionTitle>
+          
+          <MarketStatsGrid>
           {marketStatsLoading ? (
             Array.from({ length: 4 }).map((_, index) => (
               <MarketStatCard key={index}>
@@ -552,13 +557,15 @@ const Dashboard: React.FC = () => {
             </>
           )}
         </MarketStatsGrid>
-      </MarketOverviewSection>
+        </MarketOverviewSection>
+      </AnimatedSection>
 
       {/* Personalized Signals Section */}
-      <PersonalizedSignalsSection>
-        <SectionTitle>
-          🎯 개인화된 투자 신호
-        </SectionTitle>
+      <AnimatedSection animation="slideUp" delay={0.4}>
+        <PersonalizedSignalsSection>
+          <SectionTitle>
+            🎯 개인화된 투자 신호
+          </SectionTitle>
         
         <SignalsContainer>
           <ScrollButtonLeft 
@@ -597,78 +604,91 @@ const Dashboard: React.FC = () => {
             ›
           </ScrollButtonRight>
         </SignalsContainer>
-      </PersonalizedSignalsSection>
+        </PersonalizedSignalsSection>
+      </AnimatedSection>
 
       {/* Timeframe Strategies Section */}
-      <TimeframeStrategiesSection>
-        <SectionTitle>
-          ⏰ 타임프레임별 투자 전략
-        </SectionTitle>
-        
-        <StrategiesGrid>
-          {timeframeStrategies.map((strategy) => (
-            <StrategyCard key={strategy.timeframe} timeframe={strategy.timeframe}>
-              <StrategyIcon>{strategy.icon}</StrategyIcon>
-              <StrategyTitle>{strategy.title}</StrategyTitle>
-              <StrategyDescription>{strategy.description}</StrategyDescription>
-              <StrategyStats>
-                <StrategyStat>
-                  <StrategyStatValue>{strategy.winRate}</StrategyStatValue>
-                  <StrategyStatLabel>승률</StrategyStatLabel>
-                </StrategyStat>
-                <StrategyStat>
-                  <StrategyStatValue>{strategy.avgReturn}</StrategyStatValue>
-                  <StrategyStatLabel>평균 수익</StrategyStatLabel>
-                </StrategyStat>
-                <StrategyStat>
-                  <StrategyStatValue>{strategy.riskLevel}</StrategyStatValue>
-                  <StrategyStatLabel>위험도</StrategyStatLabel>
-                </StrategyStat>
-              </StrategyStats>
-            </StrategyCard>
-          ))}
-        </StrategiesGrid>
-      </TimeframeStrategiesSection>
+      <AnimatedSection animation="slideUp" delay={0.5}>
+        <TimeframeStrategiesSection>
+          <SectionTitle>
+            ⏰ 타임프레임별 투자 전략
+          </SectionTitle>
+          
+          <StrategiesGrid>
+            {timeframeStrategies.map((strategy, index) => (
+              <AnimatedSection key={strategy.timeframe} animation="scale" delay={0.6 + index * 0.1}>
+                <HoverEffect effect="lift" intensity="medium">
+                  <StrategyCard timeframe={strategy.timeframe}>
+                    <StrategyIcon>{strategy.icon}</StrategyIcon>
+                    <StrategyTitle>{strategy.title}</StrategyTitle>
+                    <StrategyDescription>{strategy.description}</StrategyDescription>
+                    <StrategyStats>
+                      <StrategyStat>
+                        <StrategyStatValue>{strategy.winRate}</StrategyStatValue>
+                        <StrategyStatLabel>승률</StrategyStatLabel>
+                      </StrategyStat>
+                      <StrategyStat>
+                        <StrategyStatValue>{strategy.avgReturn}</StrategyStatValue>
+                        <StrategyStatLabel>평균 수익</StrategyStatLabel>
+                      </StrategyStat>
+                      <StrategyStat>
+                        <StrategyStatValue>{strategy.riskLevel}</StrategyStatValue>
+                        <StrategyStatLabel>위험도</StrategyStatLabel>
+                      </StrategyStat>
+                    </StrategyStats>
+                  </StrategyCard>
+                </HoverEffect>
+              </AnimatedSection>
+            ))}
+          </StrategiesGrid>
+        </TimeframeStrategiesSection>
+      </AnimatedSection>
 
-      <PremiumSection>
-        <SectionTitle>
-          🥟 김치 프리미엄
-        </SectionTitle>
-        <PremiumGrid>
-          <KimchiPremium symbol="BTC" />
-          <KimchiPremium symbol="ETH" />
-          <KimchiPremium symbol="ADA" />
-        </PremiumGrid>
-      </PremiumSection>
+      <AnimatedSection animation="slideUp" delay={0.6}>
+        <PremiumSection>
+          <SectionTitle>
+            🥟 김치 프리미엄
+          </SectionTitle>
+          <PremiumGrid>
+            <KimchiPremium symbol="BTC" />
+            <KimchiPremium symbol="ETH" />
+            <KimchiPremium symbol="ADA" />
+          </PremiumGrid>
+        </PremiumSection>
+      </AnimatedSection>
 
-      <ChartSection>
-        <SectionTitle>
-          📈 실시간 가격 차트
-        </SectionTitle>
-        <PriceChart
-          data={chartData}
-          symbol={selectedSymbol}
-          timeframe={selectedTimeframe}
-          onTimeframeChange={setSelectedTimeframe}
-          isLoading={chartLoading}
-          error={chartError?.message || null}
-        />
-      </ChartSection>
+      <AnimatedSection animation="slideUp" delay={0.7}>
+        <ChartSection>
+          <SectionTitle>
+            📈 실시간 가격 차트
+          </SectionTitle>
+          <PriceChart
+            data={chartData}
+            symbol={selectedSymbol}
+            timeframe={selectedTimeframe}
+            onTimeframeChange={setSelectedTimeframe}
+            isLoading={chartLoading}
+            error={chartError?.message || null}
+          />
+        </ChartSection>
+      </AnimatedSection>
 
-      <ComingSoonSection>
-        <ComingSoonTitle>🎯 주요 기능</ComingSoonTitle>
-        <ComingSoonText>
-          실시간 신호 분석, 개인화된 투자 전략, 고급 분석 도구가 곧 제공됩니다.
-        </ComingSoonText>
-        <FeatureList>
-          <FeatureItem>📊 실시간 신호 분석</FeatureItem>
-          <FeatureItem>🎯 개인화된 투자 전략</FeatureItem>
-          <FeatureItem>📈 고급 차트 분석</FeatureItem>
-          <FeatureItem>🔔 스마트 알림 시스템</FeatureItem>
-          <FeatureItem>🐋 고래 움직임 추적</FeatureItem>
-          <FeatureItem>📱 모바일 최적화</FeatureItem>
-        </FeatureList>
-      </ComingSoonSection>
+      <AnimatedSection animation="fadeIn" delay={0.8}>
+        <ComingSoonSection>
+          <ComingSoonTitle>🎯 주요 기능</ComingSoonTitle>
+          <ComingSoonText>
+            실시간 신호 분석, 개인화된 투자 전략, 고급 분석 도구가 곧 제공됩니다.
+          </ComingSoonText>
+          <FeatureList>
+            <FeatureItem>📊 실시간 신호 분석</FeatureItem>
+            <FeatureItem>🎯 개인화된 투자 전략</FeatureItem>
+            <FeatureItem>📈 고급 차트 분석</FeatureItem>
+            <FeatureItem>🔔 스마트 알림 시스템</FeatureItem>
+            <FeatureItem>🐋 고래 움직임 추적</FeatureItem>
+            <FeatureItem>📱 모바일 최적화</FeatureItem>
+          </FeatureList>
+        </ComingSoonSection>
+      </AnimatedSection>
     </DashboardContainer>
   );
 };

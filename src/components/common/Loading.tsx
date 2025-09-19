@@ -1,6 +1,7 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import { theme } from '../../styles/theme';
+import AnimatedLoader from './AnimatedLoader';
 
 const spin = keyframes`
   0% { transform: rotate(0deg); }
@@ -71,13 +72,15 @@ const SkeletonCard = styled.div`
 interface LoadingProps {
   size?: 'sm' | 'md' | 'lg';
   text?: string;
-  type?: 'spinner' | 'skeleton';
+  type?: 'spinner' | 'skeleton' | 'dots' | 'pulse' | 'wave' | 'bars';
+  fullScreen?: boolean;
 }
 
 const Loading: React.FC<LoadingProps> = ({ 
   size = 'md', 
   text = '로딩 중...', 
-  type = 'spinner' 
+  type = 'spinner',
+  fullScreen = false
 }) => {
   if (type === 'skeleton') {
     return (
@@ -97,11 +100,22 @@ const Loading: React.FC<LoadingProps> = ({
     );
   }
 
+  // Map old type to new AnimatedLoader variant
+  const variantMap = {
+    spinner: 'spinner' as const,
+    dots: 'dots' as const,
+    pulse: 'pulse' as const,
+    wave: 'wave' as const,
+    bars: 'bars' as const
+  };
+
   return (
-    <LoadingContainer>
-      <Spinner size={size} />
-      <LoadingText>{text}</LoadingText>
-    </LoadingContainer>
+    <AnimatedLoader
+      size={size}
+      variant={variantMap[type as keyof typeof variantMap] || 'spinner'}
+      text={text}
+      fullScreen={fullScreen}
+    />
   );
 };
 

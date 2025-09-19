@@ -40,3 +40,6 @@ export { VirtualizedList, VirtualizedGrid, useScrollPosition, useInfiniteLoading
 export { default as SkipLinks } from './SkipLinks';
 export { default as ScreenReaderOnly } from './ScreenReaderOnly';
 export { default as AccessibilityPanel } from './AccessibilityPanel';
+export { default as AnimatedSection } from './AnimatedSection';
+export { default as AnimatedLoader } from './AnimatedLoader';
+export { default as HoverEffect } from './HoverEffect';

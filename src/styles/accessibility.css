@@ -244,6 +244,26 @@
   }
 }
 
+/* Animation Performance Optimization */
+* {
+  /* Enable hardware acceleration for animations */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Optimize animations for better performance */
+.animated-element {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
+
+/* Framer Motion Performance Optimization */
+[data-framer-motion] {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
+
 /* Preference-based Media Queries */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -253,6 +273,13 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+  
+  /* Disable hardware acceleration for reduced motion */
+  * {
+    transform: none !important;
+    backface-visibility: visible !important;
+    perspective: none !important;
   }
 }
 

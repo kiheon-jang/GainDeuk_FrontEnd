@@ -1,6 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { theme } from '../../styles/theme';
+import HoverEffect from './HoverEffect';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
@@ -10,6 +11,8 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   loadingText?: string;
   iconOnly?: boolean;
+  hoverEffect?: 'lift' | 'scale' | 'glow' | 'tilt' | 'shimmer' | 'none';
+  hoverIntensity?: 'subtle' | 'medium' | 'strong';
 }
 
 const ButtonBase = styled.button<ButtonProps>`
@@ -159,6 +162,8 @@ const Button: React.FC<ButtonProps> = ({
   disabled,
   loadingText = '로딩 중...',
   iconOnly = false,
+  hoverEffect = 'lift',
+  hoverIntensity = 'medium',
   'aria-label': ariaLabel,
   ...props
 }) => {
@@ -172,7 +177,7 @@ const Button: React.FC<ButtonProps> = ({
     ...props
   };
 
-  return (
+  const buttonContent = (
     <ButtonBase {...buttonProps}>
       {loading && (
         <>
@@ -189,6 +194,17 @@ const Button: React.FC<ButtonProps> = ({
         children
       )}
     </ButtonBase>
+  );
+
+  // Disable hover effects when loading or disabled
+  if (loading || disabled) {
+    return buttonContent;
+  }
+
+  return (
+    <HoverEffect effect={hoverEffect} intensity={hoverIntensity}>
+      {buttonContent}
+    </HoverEffect>
   );
 };
 
