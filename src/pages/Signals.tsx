@@ -9,10 +9,12 @@ import {
   ConnectionStatus,
   Pagination,
   VirtualizedGrid,
-  useScrollPosition
+  useScrollPosition,
+  SEOHead
 } from '../components/common';
 import { useSignals } from '../hooks/useSignals';
 import { useWebSocket } from '../hooks/useWebSocket';
+import { createPageSEOMeta, createWebPageStructuredData } from '../utils/seoUtils';
 import type { Signal, SignalFilters as SignalFiltersType } from '../types';
 
 const SignalsContainer = styled.div`
@@ -117,6 +119,18 @@ const Signals: React.FC = () => {
   
   // Scroll position management
   const { saveScrollPosition } = useScrollPosition('signals-grid');
+
+  // SEO 메타데이터 생성
+  const seoMeta = createPageSEOMeta('signals');
+  const structuredData = createWebPageStructuredData(
+    seoMeta.title,
+    seoMeta.description,
+    'https://gaindeuk.com/signals',
+    [
+      { name: '홈', url: 'https://gaindeuk.com/' },
+      { name: '신호 분석', url: 'https://gaindeuk.com/signals' }
+    ]
+  );
 
   // WebSocket connection for real-time updates
   useWebSocket({
@@ -243,7 +257,19 @@ const Signals: React.FC = () => {
   }
 
   return (
-    <SignalsContainer>
+    <>
+      <SEOHead
+        title={seoMeta.title}
+        description={seoMeta.description}
+        keywords={seoMeta.keywords}
+        canonicalUrl="/signals"
+        ogTitle={seoMeta.title}
+        ogDescription={seoMeta.description}
+        ogUrl="/signals"
+        ogType={seoMeta.ogType}
+        structuredData={structuredData}
+      />
+      <SignalsContainer>
       <PageTitle>📊 신호 분석</PageTitle>
       
       <ConnectionStatus />
@@ -335,7 +361,8 @@ const Signals: React.FC = () => {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
       />
-    </SignalsContainer>
+      </SignalsContainer>
+    </>
   );
 };
 

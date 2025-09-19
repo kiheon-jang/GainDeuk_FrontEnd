@@ -2,9 +2,10 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { Layout } from './components/common';
+import { Layout, SEOHead } from './components/common';
 import { GlobalStyles } from './styles/GlobalStyles';
 import { queryClient } from './hooks';
+import { createOrganizationStructuredData, createWebSiteStructuredData } from './utils/seoUtils';
 import { 
   Dashboard, 
   Signals, 
@@ -23,9 +24,19 @@ function App() {
     avatar: undefined
   };
 
+  // 전역 SEO 메타데이터
+  const organizationData = createOrganizationStructuredData();
+  const websiteData = createWebSiteStructuredData();
+
   return (
     <QueryClientProvider client={queryClient}>
       <GlobalStyles />
+      <SEOHead
+        title="GainDeuk - 암호화폐 신호 분석 플랫폼"
+        description="실시간 암호화폐 신호 분석과 거래 전략을 제공하는 전문 플랫폼입니다."
+        keywords="암호화폐, 비트코인, 신호분석, 거래전략, 투자, 트레이딩"
+        structuredData={[organizationData, websiteData]}
+      />
       <Router>
         <Layout user={user} notificationCount={3}>
           <Routes>

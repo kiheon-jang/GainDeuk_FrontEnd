@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+  
+  <!-- 홈페이지 -->
+  <url>
+    <loc>https://gaindeuk.com/</loc>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- 대시보드 -->
+  <url>
+    <loc>https://gaindeuk.com/dashboard</loc>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- 신호 분석 -->
+  <url>
+    <loc>https://gaindeuk.com/signals</loc>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- 분석 도구 -->
+  <url>
+    <loc>https://gaindeuk.com/analytics</loc>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- 알림 설정 -->
+  <url>
+    <loc>https://gaindeuk.com/alerts</loc>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- 거래 전략 -->
+  <url>
+    <loc>https://gaindeuk.com/strategy</loc>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- 프로필 -->
+  <url>
+    <loc>https://gaindeuk.com/profile</loc>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <!-- 코인 목록 -->
+  <url>
+    <loc>https://gaindeuk.com/coins</loc>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- 컴포넌트 데모 -->
+  <url>
+    <loc>https://gaindeuk.com/components</loc>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <!-- 애니메이션 데모 -->
+  <url>
+    <loc>https://gaindeuk.com/animation-demo</loc>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  
+  <!-- 에러 핸들링 데모 -->
+  <url>
+    <loc>https://gaindeuk.com/error-demo</loc>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  
+  <!-- 성능 테스트 -->
+  <url>
+    <loc>https://gaindeuk.com/performance-test</loc>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  
+  <!-- 성능 대시보드 -->
+  <url>
+    <loc>https://gaindeuk.com/performance-dashboard</loc>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  
+</urlset>

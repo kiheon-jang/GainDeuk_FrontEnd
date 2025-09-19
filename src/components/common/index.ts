@@ -55,3 +55,4 @@ export {
 } from './FallbackUI';
 export { default as PerformanceProfiler } from './PerformanceProfiler';
 export { default as LazyImage } from './LazyImage';
+export { default as SEOHead } from './SEOHead';

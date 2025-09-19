@@ -1,0 +1,27 @@
+User-agent: *
+Allow: /
+
+# Sitemap 위치
+Sitemap: https://gaindeuk.com/sitemap.xml
+
+# 크롤링 지연 (초)
+Crawl-delay: 1
+
+# 특정 경로 제외 (필요시)
+# Disallow: /admin/
+# Disallow: /api/
+# Disallow: /private/
+
+# 허용할 특정 봇들
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+# 차단할 봇들 (필요시)
+# User-agent: BadBot
+# Disallow: /

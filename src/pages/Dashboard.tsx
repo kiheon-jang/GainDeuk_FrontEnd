@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { theme, mediaQueries } from '../styles/theme';
-import { PriceChart, KimchiPremium, Skeleton, AnimatedSection, HoverEffect } from '../components/common';
+import { PriceChart, KimchiPremium, Skeleton, AnimatedSection, HoverEffect, SEOHead } from '../components/common';
 import { SignalCard } from '../components/cards';
 import { useChartData, useTopSignals, useKoreanMarketStats } from '../hooks';
+import { createPageSEOMeta, createWebPageStructuredData } from '../utils/seoUtils';
 import type { Signal } from '../types';
 
 const DashboardContainer = styled.div`
@@ -416,6 +417,18 @@ const Dashboard: React.FC = () => {
   const { data: topSignals, isLoading: signalsLoading } = useTopSignals(10);
   const { data: koreanMarketStats, isLoading: marketStatsLoading } = useKoreanMarketStats();
 
+  // SEO 메타데이터 생성
+  const seoMeta = createPageSEOMeta('dashboard');
+  const structuredData = createWebPageStructuredData(
+    seoMeta.title,
+    seoMeta.description,
+    'https://gaindeuk.com/dashboard',
+    [
+      { name: '홈', url: 'https://gaindeuk.com/' },
+      { name: '대시보드', url: 'https://gaindeuk.com/dashboard' }
+    ]
+  );
+
   // Handle signal card click
   const handleSignalClick = (signal: Signal) => {
     console.log('Signal clicked:', signal);
@@ -491,7 +504,19 @@ const Dashboard: React.FC = () => {
   ];
 
   return (
-    <DashboardContainer>
+    <>
+      <SEOHead
+        title={seoMeta.title}
+        description={seoMeta.description}
+        keywords={seoMeta.keywords}
+        canonicalUrl="/dashboard"
+        ogTitle={seoMeta.title}
+        ogDescription={seoMeta.description}
+        ogUrl="/dashboard"
+        ogType={seoMeta.ogType}
+        structuredData={structuredData}
+      />
+      <DashboardContainer>
       <AnimatedSection animation="fadeIn" delay={0.1}>
         <WelcomeSection>
           <WelcomeTitle>🚀 GainDeuk 대시보드</WelcomeTitle>
@@ -689,7 +714,8 @@ const Dashboard: React.FC = () => {
           </FeatureList>
         </ComingSoonSection>
       </AnimatedSection>
-    </DashboardContainer>
+      </DashboardContainer>
+    </>
   );
 };
 

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { theme, mediaQueries } from '../styles/theme';
-import { Input, Select, Button, Checkbox, Toggle, Skeleton } from '../components/common';
+import { Input, Select, Button, Checkbox, Toggle, Skeleton, SEOHead } from '../components/common';
+import { createPageSEOMeta, createWebPageStructuredData } from '../utils/seoUtils';
 // import { usePersonalizedRecommendations } from '../hooks';
 import type { UserProfile } from '../types';
 
@@ -321,6 +322,18 @@ const Profile: React.FC = () => {
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
+  // SEO 메타데이터 생성
+  const seoMeta = createPageSEOMeta('profile');
+  const structuredData = createWebPageStructuredData(
+    seoMeta.title,
+    seoMeta.description,
+    'https://gaindeuk.com/profile',
+    [
+      { name: '홈', url: 'https://gaindeuk.com/' },
+      { name: '프로필', url: 'https://gaindeuk.com/profile' }
+    ]
+  );
+
   // Mock user ID - in real app, this would come from auth context
   // const userId = 'user123';
 
@@ -421,7 +434,19 @@ const Profile: React.FC = () => {
   }
 
   return (
-    <ProfileContainer>
+    <>
+      <SEOHead
+        title={seoMeta.title}
+        description={seoMeta.description}
+        keywords={seoMeta.keywords}
+        canonicalUrl="/profile"
+        ogTitle={seoMeta.title}
+        ogDescription={seoMeta.description}
+        ogUrl="/profile"
+        ogType={seoMeta.ogType}
+        structuredData={structuredData}
+      />
+      <ProfileContainer>
       <PageHeader>
         <PageTitle>👤 프로필 설정</PageTitle>
         <PageDescription>
@@ -760,7 +785,8 @@ const Profile: React.FC = () => {
           </SaveButton>
         </ActionButtons>
       </FormContainer>
-    </ProfileContainer>
+      </ProfileContainer>
+    </>
   );
 };
 

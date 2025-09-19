@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import { theme, mediaQueries } from '../styles/theme';
-import { Select, Skeleton } from '../components/common';
+import { Select, Skeleton, SEOHead } from '../components/common';
 import { PriceChart } from '../components/charts';
+import { createPageSEOMeta, createWebPageStructuredData } from '../utils/seoUtils';
 
 const AnalyticsContainer = styled.div`
   padding: ${theme.spacing.lg};
@@ -274,6 +275,18 @@ const Analytics: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error] = useState<string | null>(null);
 
+  // SEO 메타데이터 생성
+  const seoMeta = createPageSEOMeta('analytics');
+  const structuredData = createWebPageStructuredData(
+    seoMeta.title,
+    seoMeta.description,
+    'https://gaindeuk.com/analytics',
+    [
+      { name: '홈', url: 'https://gaindeuk.com/' },
+      { name: '분석 도구', url: 'https://gaindeuk.com/analytics' }
+    ]
+  );
+
   // Mock data
   const mockOnChainData: OnChainTransaction[] = useMemo(() => [
     {
@@ -453,7 +466,19 @@ const Analytics: React.FC = () => {
   }
 
   return (
-    <AnalyticsContainer>
+    <>
+      <SEOHead
+        title={seoMeta.title}
+        description={seoMeta.description}
+        keywords={seoMeta.keywords}
+        canonicalUrl="/analytics"
+        ogTitle={seoMeta.title}
+        ogDescription={seoMeta.description}
+        ogUrl="/analytics"
+        ogType={seoMeta.ogType}
+        structuredData={structuredData}
+      />
+      <AnalyticsContainer>
       <PageHeader>
         <PageTitle>📊 분석 도구</PageTitle>
         <PageDescription>
@@ -829,7 +854,8 @@ const Analytics: React.FC = () => {
           </DataTable>
         </Section>
       </MainContent>
-    </AnalyticsContainer>
+      </AnalyticsContainer>
+    </>
   );
 };
 
