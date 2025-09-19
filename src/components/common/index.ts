@@ -34,3 +34,6 @@ export { default as SignalSorting } from './SignalSorting';
 
 // Pagination
 export { default as Pagination } from './Pagination';
+
+// Virtualized Lists
+export { VirtualizedList, VirtualizedGrid, useScrollPosition, useInfiniteLoading } from './VirtualizedList';

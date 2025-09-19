@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { theme, mediaQueries } from '../styles/theme';
-import { Input, Select, Button, Toggle, Skeleton, Pagination } from '../components/common';
+import { Input, Select, Button, Toggle, Skeleton, Pagination, VirtualizedList, useScrollPosition } from '../components/common';
 import type { Alert } from '../types';
 
 const AlertsContainer = styled.div`
@@ -471,6 +471,9 @@ const Alerts: React.FC = () => {
   
   const itemsPerPage = 10;
   
+  // Scroll position management
+  const { saveScrollPosition } = useScrollPosition('alerts-list');
+  
   // Mock alerts data
   const mockAlerts: Alert[] = [
     {
@@ -574,6 +577,62 @@ const Alerts: React.FC = () => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  // Virtualized list render function
+  const renderAlertItem = useCallback(({ index, style, item }: { index: number; style: React.CSSProperties; item: Alert }) => {
+    return (
+      <div style={style}>
+        <AlertItem type={item.type}>
+          <AlertIcon type={item.type}>
+            {getAlertIcon(item.type)}
+          </AlertIcon>
+          
+          <AlertContent>
+            <AlertTitle>{item.title}</AlertTitle>
+            <AlertMessage>{item.message}</AlertMessage>
+          </AlertContent>
+          
+          <AlertCoin>{item.coin}</AlertCoin>
+          
+          <AlertPrice>
+            {item.price > 0 ? `$${item.price.toLocaleString()}` : '-'}
+          </AlertPrice>
+          
+          <AlertStrength strength={item.strength}>
+            {getStrengthName(item.strength)}
+          </AlertStrength>
+          
+          <AlertTime>
+            {formatTime(item.timestamp)}
+          </AlertTime>
+          
+          <AlertActions>
+            {!item.isRead && (
+              <ActionButton
+                variant="outline"
+                size="sm"
+                onClick={() => handleMarkAsRead(item._id)}
+              >
+                읽음
+              </ActionButton>
+            )}
+            <ActionButton
+              variant="outline"
+              size="sm"
+              onClick={() => handleDeleteAlert(item._id)}
+            >
+              삭제
+            </ActionButton>
+          </AlertActions>
+        </AlertItem>
+      </div>
+    );
+  }, []);
+
+  // Handle scroll position
+  const handleScroll = useCallback((scrollOffset: number) => {
+    saveScrollPosition(scrollOffset);
+  }, [saveScrollPosition]);
 
   const handleTestAlerts = async () => {
     setTestResults([]);
@@ -786,51 +845,14 @@ const Alerts: React.FC = () => {
                 </SkeletonRow>
               ))
             ) : paginatedAlerts.length > 0 ? (
-              paginatedAlerts.map((alert) => (
-                <AlertItem key={alert._id} type={alert.type}>
-                  <AlertIcon type={alert.type}>
-                    {getAlertIcon(alert.type)}
-                  </AlertIcon>
-                  
-                  <AlertContent>
-                    <AlertTitle>{alert.title}</AlertTitle>
-                    <AlertMessage>{alert.message}</AlertMessage>
-                  </AlertContent>
-                  
-                  <AlertCoin>{alert.coin}</AlertCoin>
-                  
-                  <AlertPrice>
-                    {alert.price > 0 ? `$${alert.price.toLocaleString()}` : '-'}
-                  </AlertPrice>
-                  
-                  <AlertStrength strength={alert.strength}>
-                    {getStrengthName(alert.strength)}
-                  </AlertStrength>
-                  
-                  <AlertTime>
-                    {formatTime(alert.timestamp)}
-                  </AlertTime>
-                  
-                  <AlertActions>
-                    {!alert.isRead && (
-                      <ActionButton
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleMarkAsRead(alert._id)}
-                      >
-                        읽음
-                      </ActionButton>
-                    )}
-                    <ActionButton
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleDeleteAlert(alert._id)}
-                    >
-                      삭제
-                    </ActionButton>
-                  </AlertActions>
-                </AlertItem>
-              ))
+              <VirtualizedList
+                items={paginatedAlerts}
+                itemHeight={100}
+                height={600}
+                renderItem={renderAlertItem}
+                onScroll={handleScroll}
+                overscanCount={5}
+              />
             ) : (
               <EmptyState>
                 검색 조건에 맞는 알림이 없습니다.

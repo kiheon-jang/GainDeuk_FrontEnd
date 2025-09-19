@@ -1,7 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import styled from 'styled-components';
 import { theme, mediaQueries } from '../styles/theme';
-import { Input, Select, Pagination, Skeleton, KimchiPremium } from '../components/common';
+import { Input, Select, Pagination, Skeleton, KimchiPremium, VirtualizedList, useScrollPosition } from '../components/common';
 import { PriceChart } from '../components/charts';
 import { useCoins, useCoinPriceHistory, useKimchiPremium } from '../hooks';
 import type { Coin } from '../types';
@@ -308,6 +308,9 @@ const Coins: React.FC = () => {
   
   const itemsPerPage = 20;
   
+  // Scroll position management
+  const { saveScrollPosition } = useScrollPosition('coins-list');
+  
   // Fetch coins data
   const { data: coinsData, isLoading: coinsLoading, error: coinsError } = useCoins({
     page: currentPage,
@@ -354,6 +357,56 @@ const Coins: React.FC = () => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  // Virtualized list render function
+  const renderCoinRow = useCallback(({ index, style, item }: { index: number; style: React.CSSProperties; item: Coin }) => {
+    const isPositiveChange = item.priceChange['24h'] >= 0;
+    const changePercentage = Math.abs(item.priceChange['24h']);
+    
+    return (
+      <div style={style}>
+        <CoinRow
+          isSelected={selectedCoin?._id === item._id}
+          onClick={() => handleCoinSelect(item)}
+        >
+          <RankCell>#{item.marketCapRank}</RankCell>
+          
+          <CoinInfoCell>
+            <CoinIcon>
+              {item.symbol.charAt(0)}
+            </CoinIcon>
+            <CoinDetails>
+              <CoinName>{item.name}</CoinName>
+              <CoinSymbol>{item.symbol}</CoinSymbol>
+            </CoinDetails>
+          </CoinInfoCell>
+          
+          <PriceCell>
+            <CurrentPrice>
+              ${item.currentPrice.toLocaleString()}
+            </CurrentPrice>
+          </PriceCell>
+          
+          <MarketCapCell>
+            ${(item.marketCap / 1000000000).toFixed(2)}B
+          </MarketCapCell>
+          
+          <VolumeCell>
+            ${(item.totalVolume / 1000000000).toFixed(2)}B
+          </VolumeCell>
+          
+          <Change24hCell isPositive={isPositiveChange}>
+            {isPositiveChange ? '+' : '-'}{changePercentage.toFixed(2)}%
+          </Change24hCell>
+        </CoinRow>
+      </div>
+    );
+  }, [selectedCoin]);
+
+  // Handle scroll position
+  const handleScroll = useCallback((scrollOffset: number) => {
+    saveScrollPosition(scrollOffset);
+  }, [saveScrollPosition]);
 
   const sortOptions = [
     { value: 'marketCapRank', label: '시가총액 순위' },
@@ -451,48 +504,14 @@ const Coins: React.FC = () => {
                 </SkeletonRow>
               ))
             ) : (
-              filteredCoins.map((coin) => {
-                const isPositiveChange = coin.priceChange['24h'] >= 0;
-                const changePercentage = Math.abs(coin.priceChange['24h']);
-                
-                return (
-                  <CoinRow
-                    key={coin._id}
-                    isSelected={selectedCoin?._id === coin._id}
-                    onClick={() => handleCoinSelect(coin)}
-                  >
-                    <RankCell>#{coin.marketCapRank}</RankCell>
-                    
-                    <CoinInfoCell>
-                      <CoinIcon>
-                        {coin.symbol.charAt(0)}
-                      </CoinIcon>
-                      <CoinDetails>
-                        <CoinName>{coin.name}</CoinName>
-                        <CoinSymbol>{coin.symbol}</CoinSymbol>
-                      </CoinDetails>
-                    </CoinInfoCell>
-                    
-                    <PriceCell>
-                      <CurrentPrice>
-                        ${coin.currentPrice.toLocaleString()}
-                      </CurrentPrice>
-                    </PriceCell>
-                    
-                    <MarketCapCell>
-                      ${(coin.marketCap / 1000000000).toFixed(2)}B
-                    </MarketCapCell>
-                    
-                    <VolumeCell>
-                      ${(coin.totalVolume / 1000000000).toFixed(2)}B
-                    </VolumeCell>
-                    
-                    <Change24hCell isPositive={isPositiveChange}>
-                      {isPositiveChange ? '+' : '-'}{changePercentage.toFixed(2)}%
-                    </Change24hCell>
-                  </CoinRow>
-                );
-              })
+              <VirtualizedList
+                items={filteredCoins}
+                itemHeight={80}
+                height={600}
+                renderItem={renderCoinRow}
+                onScroll={handleScroll}
+                overscanCount={5}
+              />
             )}
           </CoinsList>
           

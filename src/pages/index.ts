@@ -6,4 +6,5 @@ export { default as Strategy } from './Strategy';
 export { default as Alerts } from './Alerts';
 export { default as Analytics } from './Analytics';
 export { default as Components } from './Components';
+export { default as PerformanceTest } from './PerformanceTest';
 export { default as NotFound } from './NotFound';

@@ -1,13 +1,15 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import styled from 'styled-components';
-import { theme, mediaQueries } from '../styles/theme';
+import { theme } from '../styles/theme';
 import { 
   SignalCard, 
   SignalFilters, 
   SignalSorting, 
   SignalDetailModal,
   ConnectionStatus,
-  Pagination
+  Pagination,
+  VirtualizedGrid,
+  useScrollPosition
 } from '../components/common';
 import { useSignals } from '../hooks/useSignals';
 import { useWebSocket } from '../hooks/useWebSocket';
@@ -60,20 +62,7 @@ const FeatureItem = styled.li`
   background-color: rgba(229, 9, 20, 0.05);
 `;
 
-const SignalsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: ${theme.spacing.lg};
-  
-  ${mediaQueries.tablet} {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  }
-  
-  ${mediaQueries.mobile} {
-    grid-template-columns: 1fr;
-    gap: ${theme.spacing.md};
-  }
-`;
+// SignalsGrid is now replaced by VirtualizedGrid
 
 const ResultsInfo = styled.div`
   display: flex;
@@ -125,6 +114,9 @@ const Signals: React.FC = () => {
   const [selectedSignal, setSelectedSignal] = useState<Signal | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  
+  // Scroll position management
+  const { saveScrollPosition } = useScrollPosition('signals-grid');
 
   // WebSocket connection for real-time updates
   useWebSocket({
@@ -192,6 +184,52 @@ const Signals: React.FC = () => {
     setSelectedSignal(null);
   };
 
+  // Virtualized grid render function
+  const renderSignalCard = useCallback(({ 
+    style, 
+    item
+  }: { 
+    columnIndex: number; 
+    rowIndex: number; 
+    style: React.CSSProperties; 
+    item: Signal;
+    index: number;
+  }) => {
+    return (
+      <div style={style}>
+        <SignalCard
+          signal={item}
+          onClick={handleSignalClick}
+        />
+      </div>
+    );
+  }, []);
+
+  // Handle scroll position
+  const handleScroll = useCallback((scrollTop: number) => {
+    saveScrollPosition(scrollTop);
+  }, [saveScrollPosition]);
+
+  // Calculate grid dimensions
+  const getGridColumns = useCallback(() => {
+    const width = window.innerWidth;
+    if (width <= 768) return 1;
+    if (width <= 1024) return 2;
+    return 3;
+  }, []);
+
+  const [gridColumns, setGridColumns] = useState(getGridColumns());
+
+  // Update grid columns on resize
+  React.useEffect(() => {
+    const handleResize = () => {
+      setGridColumns(getGridColumns());
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [getGridColumns]);
+
   if (error) {
     return (
       <SignalsContainer>
@@ -238,15 +276,16 @@ const Signals: React.FC = () => {
           </ResultsInfo>
 
           {filteredAndSortedSignals.length > 0 ? (
-            <SignalsGrid>
-              {filteredAndSortedSignals.map((signal: Signal) => (
-                <SignalCard
-                  key={signal._id}
-                  signal={signal}
-                  onClick={handleSignalClick}
-                />
-              ))}
-            </SignalsGrid>
+            <VirtualizedGrid
+              items={filteredAndSortedSignals}
+              itemHeight={400}
+              itemWidth={350}
+              height={600}
+              columns={gridColumns}
+              renderItem={renderSignalCard}
+              onScroll={handleScroll}
+              overscanCount={3}
+            />
           ) : (
             <NoResultsContainer>
               <NoResultsTitle>검색 결과가 없습니다</NoResultsTitle>
