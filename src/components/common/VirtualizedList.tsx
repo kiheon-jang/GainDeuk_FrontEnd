@@ -1,5 +1,6 @@
 import React, { memo, useCallback, useMemo, useEffect, useRef } from 'react';
-import { FixedSizeList as List, FixedSizeGrid as Grid } from 'react-window';
+import { FixedSizeList as List } from 'react-window';
+import { FixedSizeGrid as Grid } from 'react-window';
 import styled from 'styled-components';
 import { theme, mediaQueries } from '../../styles/theme';
 
