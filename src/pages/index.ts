@@ -9,4 +9,5 @@ export { default as Components } from './Components';
 export { default as PerformanceTest } from './PerformanceTest';
 export { default as AnimationDemo } from './AnimationDemo';
 export { default as ErrorHandlingDemo } from './ErrorHandlingDemo';
+export { default as PerformanceDashboard } from './PerformanceDashboard';
 export { default as NotFound } from './NotFound';

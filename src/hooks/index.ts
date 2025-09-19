@@ -17,3 +17,5 @@ export {
   useWebSocketRetry,
   useFileUploadRetry
 } from './useErrorRecovery';
+export { default as usePerformanceMetrics } from './usePerformanceMetrics';
+export { default as useApiCache } from './useApiCache';

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo, useMemo, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import { motion } from 'framer-motion';
 import { theme, mediaQueries } from '../../styles/theme';
@@ -327,17 +327,36 @@ const SkeletonLine = styled.div<{ width: string; height: string }>`
   margin-bottom: ${theme.spacing.sm};
 `;
 
-const SignalCard: React.FC<SignalCardProps> = ({
+const SignalCard: React.FC<SignalCardProps> = memo(({
   signal,
   onClick,
   className,
   isLoading = false,
 }) => {
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
     if (onClick && !isLoading) {
       onClick(signal);
     }
-  };
+  }, [onClick, signal, isLoading]);
+
+  const isPositiveChange = useMemo(() => 
+    signal.metadata.priceData.change_24h >= 0, 
+    [signal.metadata.priceData.change_24h]
+  );
+  
+  const priceChangePercentage = useMemo(() => 
+    Math.abs(signal.metadata.priceData.change_24h), 
+    [signal.metadata.priceData.change_24h]
+  );
+
+  const cardVariants = useMemo(() => ({
+    hover: { scale: 1.02 },
+    tap: { scale: 0.98 }
+  }), []);
+
+  const cardTransition = useMemo(() => ({
+    duration: 0.2
+  }), []);
 
   if (isLoading) {
     return (
@@ -350,18 +369,15 @@ const SignalCard: React.FC<SignalCardProps> = ({
     );
   }
 
-  const isPositiveChange = signal.metadata.priceData.change_24h >= 0;
-  const priceChangePercentage = Math.abs(signal.metadata.priceData.change_24h);
-
   return (
     <CardContainer
       signalStrength={signal.signalStrength}
       isClickable={!!onClick}
       onClick={handleClick}
       className={className}
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      transition={{ duration: 0.2 }}
+      whileHover={cardVariants.hover}
+      whileTap={cardVariants.tap}
+      transition={cardTransition}
     >
       <CardHeader>
         <CoinInfo>
@@ -414,5 +430,7 @@ const SignalCard: React.FC<SignalCardProps> = ({
     </CardContainer>
   );
 };
+
+SignalCard.displayName = 'SignalCard';
 
 export default SignalCard;

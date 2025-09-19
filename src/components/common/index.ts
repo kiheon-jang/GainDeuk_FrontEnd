@@ -53,3 +53,5 @@ export {
   NetworkFallback,
   MaintenanceFallback
 } from './FallbackUI';
+export { default as PerformanceProfiler } from './PerformanceProfiler';
+export { default as LazyImage } from './LazyImage';
