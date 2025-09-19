@@ -691,7 +691,7 @@ const Alerts: React.FC = () => {
               <StatLabel>평균 응답 시간</StatLabel>
             </StatCard>
             <StatCard>
-              <StatValue isPositive={true}>94.7%</StatLabel>
+              <StatValue isPositive={true}>94.7%</StatValue>
               <StatLabel>전송 성공률</StatLabel>
             </StatCard>
           </StatisticsGrid>
